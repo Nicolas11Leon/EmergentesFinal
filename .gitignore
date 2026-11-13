@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Geospatial / Large data files
+data/
+*.tif
+*.tiff
+*.tsv
+*.csv
+*.zip
+*.tar.gz
+*.geojson
+*.gpkg
+
+# OS / Editor files
+.DS_Store
+.vscode/
+.idea/
