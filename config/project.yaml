@@ -1,0 +1,94 @@
+project:
+  name: "EmergentesFinal"
+  title: "A Comparative Analysis of Machine Learning Architectures for Satellite-Based Land Cover Classification"
+  roi: "San José del Palmar, Chocó, Colombia"
+  crs_target: "EPSG:9377" # MAGNA-SIRGAS Origen Nacional
+  crs_native: "EPSG:32618" # WGS 84 / UTM 18N
+  resolution_m: 10
+  nodata_value: 0
+  random_seed: 42
+
+paths:
+  raw_rasters: "data/raw"
+  processed_stack: "data/processed/stack_10bands.tif"
+  quality_mask: "data/processed/mask_valid.tif"
+  training_vectors: "data/vectors/ground_truth.gpkg"
+  roi_vector: "data/vectors/roi.gpkg"
+  dataset_tsv: "data/training/dataset.tsv"
+  synthetic_tsv: "data/training/synthetic_dataset.tsv"
+  models_dir: "models"
+  outputs_metrics: "outputs/metrics"
+  outputs_figures: "outputs/figures"
+  outputs_rasters: "outputs/rasters"
+
+spectral_bands:
+  order:
+    - "B02" # Blue (10m)
+    - "B03" # Green (10m)
+    - "B04" # Red (10m)
+    - "B05" # Red Edge 1 (20m -> 10m)
+    - "B06" # Red Edge 2 (20m -> 10m)
+    - "B07" # Red Edge 3 (20m -> 10m)
+    - "B08" # NIR Broad (10m)
+    - "B8A" # NIR Narrow (20m -> 10m)
+    - "B11" # SWIR 1 (20m -> 10m)
+    - "B12" # SWIR 2 (20m -> 10m)
+  count: 10
+
+tsv_schema:
+  mandatory_columns:
+    - "Latitude"
+    - "Longitude"
+    - "B02"
+    - "B03"
+    - "B04"
+    - "B05"
+    - "B06"
+    - "B07"
+    - "B08"
+    - "B8A"
+    - "B11"
+    - "B12"
+    - "Class"
+  tracking_columns:
+    - "Polygon_ID"
+    - "Class_ID"
+
+validation_strategy:
+  test_size: 0.20
+  n_cv_splits: 4
+  split_strategy: "GroupKFold"
+  group_column: "Polygon_ID"
+  primary_metric: "f1_macro"
+  secondary_metric: "kappa"
+
+models:
+  logistic_regression:
+    scaler: true
+    hpo_grid:
+      clf__C: [0.1, 1.0, 10.0]
+      clf__class_weight: [null, "balanced"]
+      clf__max_iter: [1000]
+  decision_tree:
+    scaler: false
+    hpo_grid:
+      clf__max_depth: [8, 16, 24, null]
+      clf__min_samples_leaf: [2, 5, 10]
+      clf__class_weight: [null, "balanced"]
+  svm:
+    scaler: true
+    hpo_grid:
+      clf__C: [0.5, 1.0, 10.0]
+      clf__gamma: ["scale", 0.1]
+      clf__kernel: ["rbf"]
+  ann:
+    scaler: true
+    hpo_grid:
+      clf__hidden_layer_sizes: [[64], [128, 64], [64, 32]]
+      clf__alpha: [0.0001, 0.001]
+      clf__max_iter: [500]
+  knn:
+    scaler: true
+    hpo_grid:
+      clf__n_neighbors: [3, 5, 9, 15]
+      clf__weights: ["uniform", "distance"]

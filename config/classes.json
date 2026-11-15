@@ -1,0 +1,35 @@
+{
+  "classes": [
+    {
+      "id": 1,
+      "name": "Bosque",
+      "color": "#1b7837",
+      "description": "Bosque denso húmedo tropical y vegetación arbórea continua."
+    },
+    {
+      "id": 2,
+      "name": "Pastos y Cultivos",
+      "color": "#a6d96a",
+      "description": "Áreas de pastoreo, rastrojo bajo y mosaicos agrícolas."
+    },
+    {
+      "id": 3,
+      "name": "Suelo Desnudo y Roca",
+      "color": "#d73027",
+      "description": "Cicatrices de deslizamiento activas, depósitos aluviales y roca expuesta."
+    },
+    {
+      "id": 4,
+      "name": "Urbano y Vías",
+      "color": "#e08214",
+      "description": "Casco urbano de San José del Palmar, carreteras e infraestructura construida."
+    },
+    {
+      "id": 5,
+      "name": "Agua",
+      "color": "#2166ac",
+      "description": "Cauces hídricos permanentes (e.g. Río Ingará) y cuerpos de agua."
+    }
+  ],
+  "nodata_code": 0
+}
