@@ -51,8 +51,20 @@ def train_logistic_regression(dataset_path: str = None, config_path: str = "conf
     unique_classes = sorted(list(df["Class"].unique()))
     
     # Separación espacial desarrollo / prueba independiente (80% dev, 20% test)
-    gss = GroupShuffleSplit(n_splits=1, test_size=cfg["validation_strategy"]["test_size"], random_state=cfg["project"]["random_seed"])
-    dev_idx, test_idx = next(gss.split(X, y, groups=groups))
+    partitions_file = "data/training/spatial_partitions.json"
+    if os.path.isfile(partitions_file):
+        with open(partitions_file, "r", encoding="utf-8") as pf:
+            part_meta = json.load(pf)
+        test_polys = set(str(p) for p in part_meta["test_polygons"])
+        str_groups = np.array([str(g) for g in groups])
+        test_mask = np.isin(str_groups, list(test_polys))
+        dev_mask = ~test_mask
+        dev_idx = np.where(dev_mask)[0]
+        test_idx = np.where(test_mask)[0]
+        print(f"[*] Utilizando particiones espaciales predefinidas desde: {partitions_file}")
+    else:
+        gss = GroupShuffleSplit(n_splits=1, test_size=cfg["validation_strategy"]["test_size"], random_state=cfg["project"]["random_seed"])
+        dev_idx, test_idx = next(gss.split(X, y, groups=groups))
     
     X_dev, y_dev, groups_dev = X[dev_idx], y[dev_idx], groups[dev_idx]
     X_test, y_test, groups_test = X[test_idx], y[test_idx], groups[test_idx]
