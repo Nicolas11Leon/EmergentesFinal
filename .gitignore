@@ -18,9 +18,11 @@ data/*
 !data/vectors/**
 !data/training/
 !data/training/spatial_partitions.json
+!data/training/dataset.tsv
 *.tif
 *.tiff
 *.tsv
+!data/training/dataset.tsv
 *.csv
 *.zip
 *.tar.gz
