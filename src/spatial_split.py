@@ -41,14 +41,18 @@ def generate_spatial_splits(dataset_path: str = None, config_path: str = "config
     test_size = cfg["validation_strategy"]["test_size"]
     n_splits = cfg["validation_strategy"]["n_cv_splits"]
     
-    # 1. Separación Train-Dev / Test independiente a nivel de polígono
-    gss = GroupShuffleSplit(n_splits=1, test_size=test_size, random_state=random_seed)
-    dev_poly_idx, test_poly_idx = next(gss.split(unique_polygons, groups=unique_polygons["Polygon_ID"]))
+    # 1. Separación Train-Dev / Test independiente a nivel de polígono estratificada por clase
+    from sklearn.model_selection import StratifiedShuffleSplit
+    sss = StratifiedShuffleSplit(n_splits=1, test_size=test_size, random_state=random_seed)
+    dev_poly_idx, test_poly_idx = next(sss.split(unique_polygons, unique_polygons["Class"]))
     
     dev_poly_ids = unique_polygons.iloc[dev_poly_idx]["Polygon_ID"].tolist()
     test_poly_ids = unique_polygons.iloc[test_poly_idx]["Polygon_ID"].tolist()
     
     print(f"[✓] Polígonos de prueba reservada (Test set): {len(test_poly_ids)} polígonos")
+    print("    Composición del Test set por clase:")
+    for cls_name, grp in unique_polygons.iloc[test_poly_idx].groupby("Class"):
+        print(f"      - {cls_name:22s}: {len(grp)} polígonos ({grp['pixel_count'].sum()} píxeles)")
     print(f"[✓] Polígonos de desarrollo (Dev set): {len(dev_poly_ids)} polígonos")
     
     # 2. Generar folds de GroupKFold dentro del Dev set

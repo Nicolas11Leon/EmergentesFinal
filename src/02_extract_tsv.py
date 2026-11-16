@@ -91,7 +91,7 @@ def extract_tsv(config_path: str = "config/project.yaml") -> bool:
         os.makedirs(os.path.dirname(output_tsv), exist_ok=True)
         
         for idx, row in gdf.iterrows():
-            poly_id = int(row["Polygon_ID"])
+            poly_id = str(row["Polygon_ID"])
             class_id = int(row["Class_ID"])
             class_name = str(row["Class"])
             geom = [row.geometry]

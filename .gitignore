@@ -15,8 +15,9 @@ env/
 # Geospatial / Large data files
 data/*
 !data/vectors/
-!data/vectors/*.gpkg
-!data/vectors/*.geojson
+!data/vectors/**
+!data/training/
+!data/training/spatial_partitions.json
 *.tif
 *.tiff
 *.tsv
