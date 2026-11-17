@@ -17,19 +17,34 @@ def load_config(config_path: str = "config/project.yaml") -> dict:
     with open(config_path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
-def predict_full_scene(model_path: str = "models/logistic_regression.joblib",
+def predict_full_scene(model_path: str = "models/svm.joblib",
                        stack_path: str = "data/processed/stack_10bands.tif",
-                       output_raster: str = "outputs/rasters/landcover_logistic_regression.tif",
-                       output_stats: str = "outputs/metrics/area_stats_logistic_regression.json",
+                       mask_path: str = "data/processed/mask_valid.tif",
+                       output_raster: str = None,
+                       output_stats: str = None,
                        config_path: str = "config/project.yaml"):
+    # Si no se especifican rutas de salida, derivarlas del nombre del modelo
+    model_base = os.path.splitext(os.path.basename(model_path))[0]
+    if output_raster is None:
+        output_raster = f"outputs/rasters/landcover_{model_base}.tif"
+    if output_stats is None:
+        output_stats = f"outputs/metrics/area_stats_{model_base}.json"
+
     print(f"[*] Iniciando inferencia ráster espacial completa...")
     print(f"    Modelo: {model_path}")
     print(f"    Stack: {stack_path}")
-    print(f"    Salida: {output_raster}")
+    print(f"    Máscara de calidad: {mask_path}")
+    print(f"    Salida ráster: {output_raster}")
     
     if not os.path.isfile(model_path):
-        print(f"[ERROR] No se encuentra el modelo: {model_path}")
-        return False
+        # Fallback a logistic_regression si svm aún no está disponible
+        if os.path.isfile("models/logistic_regression.joblib"):
+            model_path = "models/logistic_regression.joblib"
+            print(f"[INFO] Utilizando modelo baseline: {model_path}")
+        else:
+            print(f"[ERROR] No se encuentra el modelo: {model_path}")
+            return False
+            
     if not os.path.isfile(stack_path):
         print(f"[ERROR] No se encuentra el stack ráster: {stack_path}")
         return False
@@ -55,8 +70,15 @@ def predict_full_scene(model_path: str = "models/logistic_regression.joblib",
         # Leer todas las bandas (10, H, W)
         stack_data = src.read()
         
-    # Máscara de píxeles válidos (evitar background fuera de ROI o nodata)
-    valid_mask = stack_data[0] > 0
+    # Aplicar máscara oficial de calidad (nubes, sombras y píxeles no válidos) si existe
+    if os.path.isfile(mask_path):
+        with rasterio.open(mask_path) as m_src:
+            mask_data = m_src.read(1)
+        valid_mask = (stack_data[0] > 0) & (mask_data > 0)
+        print(f"[✓] Máscara de calidad aplicada ({mask_path}): excluye nubes, sombras y NoData.")
+    else:
+        valid_mask = stack_data[0] > 0
+        print(f"[!] Máscara de calidad no encontrada, usando B02 > 0.")
     # Reordenar a (H * W, 10)
     flat_features = stack_data.reshape(stack_data.shape[0], -1).T
     flat_valid = valid_mask.flatten()
@@ -122,4 +144,7 @@ def predict_full_scene(model_path: str = "models/logistic_regression.joblib",
     return True
 
 if __name__ == "__main__":
-    predict_full_scene()
+    m_path = sys.argv[1] if len(sys.argv) > 1 else "models/svm.joblib"
+    o_rast = sys.argv[2] if len(sys.argv) > 2 else None
+    o_stat = sys.argv[3] if len(sys.argv) > 3 else None
+    predict_full_scene(model_path=m_path, output_raster=o_rast, output_stats=o_stat)
