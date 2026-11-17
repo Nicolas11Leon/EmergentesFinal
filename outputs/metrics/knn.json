@@ -1,0 +1,90 @@
+{
+  "model_name": "K-Nearest Neighbors",
+  "best_params": {
+    "clf__n_neighbors": 15,
+    "clf__weights": "distance"
+  },
+  "cv_macro_f1_mean": 0.6805,
+  "cv_macro_f1_std": 0.0961,
+  "test_overall_accuracy": 0.877,
+  "test_kappa": 0.7936,
+  "test_macro_f1": 0.6159,
+  "test_weighted_f1": 0.8708,
+  "test_confusion_matrix": [
+    [
+      23,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1222,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      33,
+      139,
+      31
+    ],
+    [
+      0,
+      1,
+      54,
+      1063,
+      71
+    ],
+    [
+      26,
+      0,
+      0,
+      11,
+      34
+    ]
+  ],
+  "class_metrics": {
+    "Agua": {
+      "precision": 0.4694,
+      "recall": 1.0,
+      "f1_score": 0.6389,
+      "support": 23
+    },
+    "Bosque": {
+      "precision": 0.9992,
+      "recall": 1.0,
+      "f1_score": 0.9996,
+      "support": 1222
+    },
+    "Pastos y Cultivos": {
+      "precision": 0.3793,
+      "recall": 0.1626,
+      "f1_score": 0.2276,
+      "support": 203
+    },
+    "Suelo Desnudo y Roca": {
+      "precision": 0.8763,
+      "recall": 0.894,
+      "f1_score": 0.8851,
+      "support": 1189
+    },
+    "Urbano y Vías": {
+      "precision": 0.25,
+      "recall": 0.4789,
+      "f1_score": 0.3285,
+      "support": 71
+    }
+  },
+  "training_time_seconds": 4.17,
+  "classes": [
+    "Agua",
+    "Bosque",
+    "Pastos y Cultivos",
+    "Suelo Desnudo y Roca",
+    "Urbano y Vías"
+  ]
+}

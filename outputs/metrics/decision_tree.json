@@ -1,0 +1,91 @@
+{
+  "model_name": "Decision Tree",
+  "best_params": {
+    "clf__class_weight": "balanced",
+    "clf__max_depth": 8,
+    "clf__min_samples_leaf": 2
+  },
+  "cv_macro_f1_mean": 0.6926,
+  "cv_macro_f1_std": 0.0923,
+  "test_overall_accuracy": 0.8641,
+  "test_kappa": 0.7827,
+  "test_macro_f1": 0.6794,
+  "test_weighted_f1": 0.8795,
+  "test_confusion_matrix": [
+    [
+      23,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1222,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      115,
+      46,
+      42
+    ],
+    [
+      0,
+      0,
+      240,
+      939,
+      10
+    ],
+    [
+      28,
+      0,
+      0,
+      2,
+      41
+    ]
+  ],
+  "class_metrics": {
+    "Agua": {
+      "precision": 0.451,
+      "recall": 1.0,
+      "f1_score": 0.6216,
+      "support": 23
+    },
+    "Bosque": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 1222
+    },
+    "Pastos y Cultivos": {
+      "precision": 0.3239,
+      "recall": 0.5665,
+      "f1_score": 0.4122,
+      "support": 203
+    },
+    "Suelo Desnudo y Roca": {
+      "precision": 0.9514,
+      "recall": 0.7897,
+      "f1_score": 0.8631,
+      "support": 1189
+    },
+    "Urbano y Vías": {
+      "precision": 0.4409,
+      "recall": 0.5775,
+      "f1_score": 0.5,
+      "support": 71
+    }
+  },
+  "training_time_seconds": 7.51,
+  "classes": [
+    "Agua",
+    "Bosque",
+    "Pastos y Cultivos",
+    "Suelo Desnudo y Roca",
+    "Urbano y Vías"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "dataset_sha256": "f90bc65884ea46f5f7c989ff00cd4d7f8d8026aa948d504a7b0b03a42def001a",
+  "partitions_sha256": "c6f5f571f14398ebb8ab17c1c86d18b6f7120290b7e0174810869e3e32adc157",
+  "cv_source": "data/training/spatial_partitions.json:cv_folds",
+  "cv_folds": 4,
+  "dev_polygons": 116,
+  "test_polygons": 29,
+  "feature_order": [
+    "B02",
+    "B03",
+    "B04",
+    "B05",
+    "B06",
+    "B07",
+    "B08",
+    "B8A",
+    "B11",
+    "B12"
+  ],
+  "seed": 42
+}
