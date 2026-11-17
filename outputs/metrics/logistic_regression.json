@@ -5,8 +5,8 @@
     "clf__class_weight": "balanced",
     "clf__max_iter": 1000
   },
-  "cv_macro_f1_mean": 0.6514,
-  "cv_macro_f1_std": 0.1387,
+  "cv_macro_f1_mean": 0.7039,
+  "cv_macro_f1_std": 0.0749,
   "test_overall_accuracy": 0.8287,
   "test_kappa": 0.7343,
   "test_macro_f1": 0.6516,
@@ -80,7 +80,7 @@
       "support": 71
     }
   },
-  "training_time_seconds": 6.89,
+  "training_time_seconds": 5.81,
   "classes": [
     "Agua",
     "Bosque",

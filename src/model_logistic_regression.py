@@ -78,9 +78,21 @@ def train_logistic_regression(dataset_path: str = None, config_path: str = "conf
         ("clf", LogisticRegression(random_state=cfg["project"]["random_seed"], max_iter=1000))
     ])
     
-    # HPO mediante GridSearchCV sobre datos de desarrollo
+    # HPO mediante GridSearchCV sobre datos de desarrollo utilizando los folds exactos del JSON
     param_grid = cfg["models"]["logistic_regression"]["hpo_grid"]
-    cv = GroupKFold(n_splits=cfg["validation_strategy"]["n_cv_splits"])
+    
+    if os.path.isfile(partitions_file):
+        custom_cv = []
+        for fold_name, fold_data in part_meta["cv_folds"].items():
+            val_polys = set(str(p) for p in fold_data["val_polygons"])
+            val_mask_f = np.isin(groups_dev, list(val_polys))
+            train_idx_f = np.where(~val_mask_f)[0]
+            val_idx_f = np.where(val_mask_f)[0]
+            custom_cv.append((train_idx_f, val_idx_f))
+        cv = custom_cv
+        print(f"[*] Folds de validación cruzada configurados desde JSON: {len(custom_cv)} particiones exactas.")
+    else:
+        cv = GroupKFold(n_splits=cfg["validation_strategy"]["n_cv_splits"])
     
     grid_search = GridSearchCV(
         estimator=pipeline,
