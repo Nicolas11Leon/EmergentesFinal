@@ -13,15 +13,19 @@ env/
 .ipynb_checkpoints
 
 # Geospatial / Large data files
-data/
+data/*
+!data/vectors/
+!data/vectors/**
+!data/training/
+!data/training/spatial_partitions.json
+!data/training/dataset.tsv
 *.tif
 *.tiff
 *.tsv
+!data/training/dataset.tsv
 *.csv
 *.zip
 *.tar.gz
-*.geojson
-*.gpkg
 
 # OS / Editor files
 .DS_Store
