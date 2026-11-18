@@ -1,0 +1,42 @@
+{
+  "Bosque": {
+    "class_id": 1,
+    "pixel_count": 222336,
+    "area_ha": 2223.36,
+    "area_km2": 22.2336,
+    "percentage": 64.91,
+    "color": "#1b7837"
+  },
+  "Pastos y Cultivos": {
+    "class_id": 2,
+    "pixel_count": 2392,
+    "area_ha": 23.92,
+    "area_km2": 0.2392,
+    "percentage": 0.7,
+    "color": "#a6d96a"
+  },
+  "Suelo Desnudo y Roca": {
+    "class_id": 3,
+    "pixel_count": 114870,
+    "area_ha": 1148.7,
+    "area_km2": 11.487,
+    "percentage": 33.54,
+    "color": "#d73027"
+  },
+  "Urbano y Vías": {
+    "class_id": 4,
+    "pixel_count": 2295,
+    "area_ha": 22.95,
+    "area_km2": 0.2295,
+    "percentage": 0.67,
+    "color": "#e08214"
+  },
+  "Agua": {
+    "class_id": 5,
+    "pixel_count": 632,
+    "area_ha": 6.32,
+    "area_km2": 0.0632,
+    "percentage": 0.18,
+    "color": "#2166ac"
+  }
+}
