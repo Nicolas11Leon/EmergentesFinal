@@ -93,43 +93,47 @@ Cada algoritmo se integró en un `Pipeline` de Scikit-Learn que combina preproce
 
 | Pos. | Arquitectura de ML | Overall Accuracy (%) | Kappa de Cohen | Macro-F1 (Test) | CV Macro-F1 (Dev) | Tiempo Entrenamiento (s) | Hiperparámetros Óptimos |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| 🥇 | **Support Vector Machines (SVM RBF)** | **89.70%** | **0.8283** | **0.6889** | 0.6538 (±0.0830) | 7.32 s | `kernel='rbf'`, `C=10.0`, `gamma='scale'`, `class_weight='balanced'` |
-| 🥈 | **Decision Tree (CART)** | **86.41%** | **0.7827** | **0.6794** | 0.6926 (±0.0923) | 7.51 s | `criterion='gini'`, `max_depth=10`, `min_samples_split=5` |
-| 🥉 | **Regresión Logística (Baseline)** | **82.87%** | **0.7343** | **0.6516** | **0.7039 (±0.0749)** | 5.81 s | `penalty='l2'`, `C=1.0`, `class_weight='balanced'`, `max_iter=1000` |
-| 4️⃣ | **K-Nearest Neighbors (KNN)** | **87.70%** | **0.7936** | **0.6159** | 0.6805 (±0.0961) | 4.17 s | `n_neighbors=5`, `weights='distance'`, `metric='euclidean'` |
-| 5️⃣ | *Red Neuronal (MLP)* | *(En desarrollo)* | *(Pendiente)* | *(Pendiente)* | *(Pendiente)* | *(Pendiente)* | *Rol 3 (Hania)* |
+| 🥇 | **Red Neuronal (ANN / MLP)** | 88.74% | 0.8146 | **0.7075** | **0.7103 (±0.0866)** | 103.64 s | `hidden_layer_sizes=(64, 32)`, `alpha=0.0001`, `max_iter=500` |
+| 🥈 | **Support Vector Machines (SVM RBF)** | **89.70%** | **0.8283** | 0.6889 | 0.6538 (±0.0830) | 7.32 s | `kernel='rbf'`, `C=10.0`, `gamma='scale'`, `class_weight='balanced'` |
+| 🥉 | **Decision Tree (CART)** | 86.41% | 0.7827 | 0.6794 | 0.6926 (±0.0923) | 7.51 s | `criterion='gini'`, `max_depth=10`, `min_samples_split=5` |
+| 4️⃣ | **Regresión Logística (Baseline)** | 82.87% | 0.7343 | 0.6516 | 0.7039 (±0.0749) | 5.81 s | `penalty='l2'`, `C=1.0`, `class_weight='balanced'`, `max_iter=1000` |
+| 5️⃣ | **K-Nearest Neighbors (KNN)** | 87.70% | 0.7936 | 0.6159 | 0.6805 (±0.0961) | 4.17 s | `n_neighbors=5`, `weights='distance'`, `metric='euclidean'` |
 
 ### 4.2 Desempeño por Clase sobre el Conjunto de Prueba Independiente (Test Set)
 
-| Clase / Cobertura | Muestras Test | SVM RBF (F1 / Rec / Prec) | Decision Tree (F1 / Rec / Prec) | Regresión Logística (F1 / Rec / Prec) | KNN (F1 / Rec / Prec) |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **1. Bosque** | 1.222 | **0.999** / 1.00 / 0.998 | 0.998 / 0.997 / 1.000 | 0.999 / 1.000 / 0.998 | 0.998 / 1.000 / 0.997 |
-| **2. Pastos y Cultivos** | 203 | **0.540** / 0.507 / 0.579 | 0.490 / 0.537 / 0.450 | 0.446 / 0.709 / 0.325 | 0.428 / 0.488 / 0.381 |
-| **3. Suelo Desnudo y Roca** | 1.189 | **0.865** / 0.852 / 0.878 | 0.835 / 0.771 / 0.910 | 0.799 / 0.684 / 0.960 | 0.841 / 0.795 / 0.893 |
-| **4. Urbano y Vías** | 71 | **0.463** / 0.437 / 0.492 | 0.435 / 0.423 / 0.448 | 0.393 / 0.592 / 0.294 | 0.323 / 0.296 / 0.356 |
-| **5. Agua** | 23 | 0.579 / 0.478 / **0.733** | **0.638** / 0.652 / 0.625 | 0.622 / **1.000** / 0.451 | 0.489 / 0.478 / 0.500 |
+| Clase / Cobertura | Muestras Test | ANN / MLP (F1 / Rec / Prec) | SVM RBF (F1 / Rec / Prec) | Decision Tree (F1 / Rec / Prec) | Regresión Logística (F1 / Rec / Prec) | KNN (F1 / Rec / Prec) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1. Bosque** | 1.222 | **1.000** / 1.000 / 0.999 | 0.999 / 1.000 / 0.998 | 0.998 / 0.997 / 1.000 | 0.999 / 1.000 / 0.998 | 0.998 / 1.000 / 0.997 |
+| **2. Pastos y Cultivos** | 203 | 0.409 / 0.463 / 0.366 | **0.540** / 0.507 / **0.579** | 0.490 / 0.537 / 0.450 | 0.446 / **0.709** / 0.325 | 0.428 / 0.488 / 0.381 |
+| **3. Suelo Desnudo y Roca** | 1.189 | **0.888** / 0.861 / 0.918 | 0.865 / 0.852 / 0.878 | 0.835 / 0.771 / 0.910 | 0.799 / 0.684 / **0.960** | 0.841 / 0.795 / 0.893 |
+| **4. Urbano y Vías** | 71 | **0.593** / 0.563 / **0.625** | 0.463 / 0.437 / 0.492 | 0.435 / 0.423 / 0.448 | 0.393 / 0.592 / 0.294 | 0.323 / 0.296 / 0.356 |
+| **5. Agua** | 23 | **0.648** / **1.000** / 0.479 | 0.579 / 0.478 / **0.733** | 0.638 / 0.652 / 0.625 | 0.622 / **1.000** / 0.451 | 0.489 / 0.478 / 0.500 |
 
 ### 4.3 Discusión de Resultados y Comportamiento de las Arquitecturas
-1. **Liderazgo de SVM:** El algoritmo SVM con kernel RBF alcanzó la máxima exactitud global (89.70%) y el índice Kappa más alto (0.8283, clasificado por Landis y Koch como concordancia casi perfecta). Al proyectar las 10 bandas a un espacio de Hilbert de dimensión infinita, SVM logra trazar hiperplanos no lineales que separan con gran nitidez el suelo desnudo (F1: 0.865) y las estructuras urbanas (F1: 0.463) frente a la vegetación.
-2. **Contraste entre Validación Cruzada y Prueba Independiente:** La Regresión Logística obtuvo el mayor Macro-F1 en validación cruzada sobre desarrollo (0.7039), pero cayó a 0.6516 en el test independiente. Por el contrario, SVM obtuvo 0.6538 en CV pero subió a 0.6889 en test. Esto se debe a que la frontera de decisión lineal de la regresión logística generaliza razonablemente entre folds con distribución homogénea pero sufre ante polígonos de prueba con pendientes orográficas o sombras leves no vistas en entrenamiento, donde el kernel RBF de SVM exhibe mayor robustez.
-3. **Importancia de Bandas (Decision Tree):** El árbol de decisión identificó que la banda infrarroja de onda corta **`B11` (SWIR 1)** y la banda del borde rojo **`B05` (Red Edge 1)** concentran más del 65% de la importancia de división de nodos, ratificando la necesidad de incluir las 10 bandas y justificando por qué un stack básico de 3 o 4 bandas visibles resulta insuficiente en terrenos montañosos complejos.
+1. **Duelo en la Cumbre (ANN vs. SVM):** 
+   - La **Red Neuronal Artificial (ANN / MLP)** se corona como la **campeona en Macro-F1 (0.7075 en Test y 0.7103 en CV)** gracias a su capacidad de aprender representaciones no lineales complejas para clases minoritarias desbalanceadas: logra el mejor F1 en **Urbano y Vías (0.5926)**, en **Agua (0.6479)** y en **Suelo Desnudo (0.8885)**.
+   - **Support Vector Machines (SVM RBF)** logra la mayor **Exactitud Global (89.70%) y el índice Kappa más alto (0.8283)**, maximizando el margen geométrico de separación entre las coberturas predominantes (Bosque y Suelo Desnudo).
+2. **Contraste entre Validación Cruzada y Prueba Independiente:** La Regresión Logística obtuvo un alto Macro-F1 en validación cruzada (0.7039), pero cayó a 0.6516 en el test independiente debido a la rigidez de su frontera hiperplanar lineal ante pendientes topográficas. Por el contrario, la ANN demostró la mayor estabilidad y generalización real (CV: 0.7103 vs Test: 0.7075, brecha inferior al 0.3%).
+3. **Importancia de Bandas (Decision Tree):** El árbol de decisión identificó que la banda infrarroja de onda corta **`B11` (SWIR 1)** y la banda del borde rojo **`B05` (Red Edge 1)** concentran más del 65% de la importancia de división de nodos, ratificando la necesidad del stack de 10 bandas y justificando por qué un stack RGB básico fracasa en terrenos de alta montaña.
 
 ---
 
 ## 5. Inferencia Ráster Espacial Completa y Cuantificación de Áreas
 
-Con el módulo [`src/predict_raster.py`](file:///home/nicomania11/Proyectos~/Escritorio/Emergentes/src/predict_raster.py) se desplegaron los modelos sobre los 471.371 píxeles válidos de la escena completa aplicando la máscara de calidad [`mask_valid.tif`](file:///home/nicomania11/Proyectos~/Escritorio/Emergentes/data/processed/mask_valid.tif). A una resolución de celda de $10\text{ m} \times 10\text{ m}$ (100 $\text{m}^2$ = 0.01 ha por píxel), se obtuvieron las siguientes estadísticas de cobertura:
+Con el módulo [`src/predict_raster.py`](file:///home/nicomania11/Proyectos~/Escritorio/Emergentes/src/predict_raster.py) se desplegaron los cinco modelos sobre la escena recortada en `EPSG:9377`. Al exigir información espectral válida en las 10 bandas de manera estricta (intersección física sin imputación sintética), el dominio analizado comprende **342.525 píxeles válidos (3.425,25 ha = 34,25 km²)**.
 
-| Cobertura de la Tierra | Código | Color Oficial | Píxeles Clasificados (SVM) | Área (ha) | Área ($\text{km}^2$) | Porcentaje (%) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Bosque** | 1 | `#1b7837` | 218.001 | 2.180,01 ha | 21,800 $\text{km}^2$ | 46.25 % |
-| **Suelo Desnudo y Roca (Deslizamientos)** | 3 | `#d73027` | 246.900 | 2.469,00 ha | 24,690 $\text{km}^2$ | 52.38 % |
-| **Pastos y Cultivos** | 2 | `#a6d96a` | 3.726 | 37,26 ha | 0,373 $\text{km}^2$ | 0.79 % |
-| **Urbano y Vías** | 4 | `#e08214` | 2.223 | 22,23 ha | 0,222 $\text{km}^2$ | 0.47 % |
-| **Agua** | 5 | `#2166ac` | 521 | 5,21 ha | 0,052 $\text{km}^2$ | 0.11 % |
-| **TOTAL VÁLIDO ANALIZADO** | — | — | **471.371** | **4.713,71 ha** | **47,137 $\text{km}^2$** | **100.00 %** |
+### Distribución Espacial de Coberturas Post-Desastre (Modelo Campeón ANN vs. SVM)
 
-*(Nota: En la Regresión Logística, el área predicha de pastos fue superior (1.652 ha) debido a la confusión espectral lineal entre vegetación secundaria y suelo ralo en laderas convexas, confusión que SVM resuelve asignando con mayor precisión las cicatrices y depósitos coluviales a suelo desnudo).*
+| Cobertura de la Tierra | Código | Color Oficial | Píxeles (ANN) | Área ANN (ha) | % ANN | Píxeles (SVM) | Área SVM (ha) | % SVM |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Bosque Húmedo Tropical** | 1 | `#1b7837` | 218.951 | 2.189,51 ha | 63.92 % | 218.001 | 2.180,01 ha | 63.65 % |
+| **Suelo Desnudo / Deslizamientos** | 3 | `#d73027` | 117.213 | 1.172,13 ha | 34.22 % | 118.054 | 1.180,54 ha | 34.47 % |
+| **Pastos y Cultivos** | 2 | `#a6d96a` | 3.822 | 38,22 ha | 1.12 % | 3.726 | 37,26 ha | 1.09 % |
+| **Urbano y Vías de Comunicación** | 4 | `#e08214` | 1.993 | 19,93 ha | 0.58 % | 2.223 | 22,23 ha | 0.65 % |
+| **Cuerpos de Agua (Río Ingará)** | 5 | `#2166ac` | 546 | 5,46 ha | 0.16 % | 521 | 5,21 ha | 0.15 % |
+| **TOTAL VÁLIDO ANALIZADO** | — | — | **342.525** | **3.425,25 ha** | **100.00 %** | **342.525** | **3.425,25 ha** | **100.00 %** |
+
+**Hallazgo Crítico Territorial:** Más de **1.170 hectáreas (34.2% del territorio despejado analizado)** corresponden a suelo desnudo, roca y cicatrices de deslizamientos como consecuencia directa del sismo $M_w$ 7.4. La cartografía temática generada en QGIS (`Clasificacion_Cobertura_ANN.qgz`) y exportada en [`outputs/figures/mapa_cobertura_ann.png`](file:///home/nicomania11/Proyectos~/Escritorio/Emergentes/outputs/figures/mapa_cobertura_ann.png) revela cómo los movimientos en masa repotenciaron el arrastre sedimentario hacia el río Ingará e interrumpieron las vías terciarias de conexión urbana.
 
 El archivo de simbología [`outputs/rasters/landcover_style.qml`](file:///home/nicomania11/Proyectos~/Escritorio/Emergentes/outputs/rasters/landcover_style.qml) permite renderizar de inmediato el producto en QGIS garantizando la paleta de colores canónica del proyecto.
 
