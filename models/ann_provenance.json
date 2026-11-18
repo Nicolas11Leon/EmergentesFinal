@@ -1,0 +1,53 @@
+{
+  "dataset_sha256": "f90bc65884ea46f5f7c989ff00cd4d7f8d8026aa948d504a7b0b03a42def001a",
+  "partitions_sha256": "92bf14d05a82cb31a7f34ffbbdfb3467a8731fa15ef444e5c7883f08577b93c4",
+  "cv_source": "data/training/spatial_partitions.json:cv_folds",
+  "cv_folds": 4,
+  "dev_polygons": 116,
+  "test_polygons": 29,
+  "feature_order": [
+    "B02",
+    "B03",
+    "B04",
+    "B05",
+    "B06",
+    "B07",
+    "B08",
+    "B8A",
+    "B11",
+    "B12"
+  ],
+  "seed": 42,
+  "grid_search": {
+    "clf__hidden_layer_sizes": [
+      [
+        64
+      ],
+      [
+        128,
+        64
+      ],
+      [
+        64,
+        32
+      ]
+    ],
+    "clf__alpha": [
+      0.0001,
+      0.001
+    ],
+    "clf__max_iter": [
+      500
+    ]
+  },
+  "best_params": {
+    "clf__alpha": 0.0001,
+    "clf__hidden_layer_sizes": [
+      64,
+      32
+    ],
+    "clf__max_iter": 500
+  },
+  "convergence_warnings_detected_on_main_process": [],
+  "notes": "Con n_jobs>1, los warnings de subprocesos pueden no quedar capturados aqui."
+}
