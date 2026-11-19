@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuaderno de Sustentación | Proyecto Final GeoAI</title>
+  <style>
+    :root {
+      --primary: #102C57;
+      --secondary: #1679AB;
+      --accent: #E08214;
+      --danger: #D73027;
+      --success: #1B7837;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text: #1E293B;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 2.5rem 2rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 25px -5px rgba(16, 44, 87, 0.2);
+    }
+
+    header h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    header p.subtitle {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    .badge-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(4px);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      color: var(--primary);
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      color: var(--secondary);
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 1.25rem 0 0.5rem 0;
+    }
+
+    p {
+      margin-bottom: 0.85rem;
+      color: var(--text);
+    }
+
+    blockquote {
+      background: #EFF6FF;
+      border-left: 4px solid var(--secondary);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1rem 0;
+      font-style: italic;
+      color: #1E3A8A;
+    }
+
+    blockquote strong {
+      color: var(--primary);
+      font-style: normal;
+    }
+
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.35rem;
+    }
+
+    /* Tablas modernas */
+    .table-responsive {
+      overflow-x: auto;
+      margin: 1rem 0;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background-color: var(--primary);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    tr:nth-child(even) {
+      background-color: #F8FAFC;
+    }
+
+    tr:hover {
+      background-color: #F1F5F9;
+    }
+
+    .pill-win {
+      background-color: #DCFCE7;
+      color: var(--success);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .pill-loss {
+      background-color: #FEE2E2;
+      color: var(--danger);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .stat-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    code {
+      background: #F1F5F9;
+      color: #D946EF;
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.85em;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <header>
+      <h1>Cuaderno de Sustentación | Proyecto Final GeoAI</h1>
+      <p class="subtitle">Clasificación de Coberturas Terrestres Post-Sismo en San José del Palmar, Chocó</p>
+      <div class="badge-container">
+        <span class="badge">Pontificia Universidad Javeriana</span>
+        <span class="badge">Tecnologías Emergentes</span>
+        <span class="badge">Prof. Andrés O. Calderón Romero, Ph.D.</span>
+        <span class="badge">19 de noviembre de 2026</span>
+      </div>
+    </header>
+
+    <!-- METRICAS CLAVE -->
+    <div class="stat-grid">
+      <div class="stat-box">
+        <div class="stat-number">3.425,25 ha</div>
+        <div class="stat-label">Área Oficial Analizada</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" style="color: var(--danger);">34,22 %</div>
+        <div class="stat-label">Suelo Expuesto y Derrumbes (1.172 ha)</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" style="color: var(--success);">0,7075</div>
+        <div class="stat-label">Macro-F1 Ganador (ANN / MLP)</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">10 Bandas</div>
+        <div class="stat-label">Sentinel-2 (EPSG:9377)</div>
+      </div>
+    </div>
+
+    <!-- SECCION 1: EL DISCURSO -->
+    <section class="card">
+      <h2>🎤 1. Libreto del Discurso para la Sustentación (Paso a Paso)</h2>
+      
+      <h3>Paso 1: Saludo e Introducción (De QGIS a GeoAI)</h3>
+      <blockquote>
+        "Buenos días, profesor. Somos el equipo conformado por Nicolás León, Andrés Felipe Barrios, Hania Valentina Carreño y Jorge Sierra.<br><br>
+        En los laboratorios pasados trabajábamos la clasificación supervisada directamente dentro de la interfaz gráfica de QGIS. Sin embargo, para este proyecto final dimos el salto metodológico a <strong>GeoAI programático en Python</strong>.<br><br>
+        <strong>¿Por qué migrar a GeoAI?</strong><br>
+        1. <strong>Escalabilidad:</strong> En QGIS todo depende de clics manuales y memoria de escritorio; en Python podemos procesar millones de píxeles y escenas satelitales completas de forma automatizada.<br>
+        2. <strong>Precisión algorítmica y control:</strong> Podemos optimizar hiperparámetros finos (<code>GridSearchCV</code>) y calibrar las fronteras matemáticas de decisión.<br>
+        3. <strong>Rigor científico y reproducibilidad:</strong> Todo el flujo queda en código auditable, con semillas fijas y control estricto de particiones para garantizar cero fuga de información."
+      </blockquote>
+
+      <h3>Paso 2: El Evento y la Regla de Oro (Cero Fuga Espacial)</h3>
+      <blockquote>
+        "El caso de estudio es el sismo de magnitud $M_w$ 7.4 del 10 de agosto de 2026 en San José del Palmar (Chocó). En lugar de arriesgar vidas caminando la selva montañosa tras el desastre, tomamos una imagen Sentinel-2 del 18 de agosto con 10 bandas espectrales.<br><br>
+        Nuestro principio técnico no negociable fue garantizar <strong>cero fuga espacial (<em>Zero Spatial Data Leakage</em>)</strong>:<br>
+        • Si hacíamos una separación aleatoria por píxeles sueltos, el modelo memorizaba píxeles vecinos idénticos del mismo potrero o derrumbe (Primera Ley de Tobler) y sacaba una nota alta falsa.<br>
+        • Nosotros separamos por <strong>polígonos completos (<code>Polygon_ID</code>)</strong>: 116 polígonos de desarrollo para entrenar con 4 folds espaciales, y 29 polígonos de prueba (2.708 píxeles) totalmente aislados bajo llave para el examen final."
+      </blockquote>
+
+      <h3>Paso 3: La Competencia y el Criterio Macro-F1</h3>
+      <blockquote>
+        "Pusimos a competir cinco arquitecturas de aprendizaje automático sobre las mismas 10 bandas y con los mismos datos: Regresión Logística, Árbol de Decisión, KNN, SVM (kernel RBF) y Red Neuronal Artificial (ANN/MLP).<br><br>
+        Evaluamos el desempeño usando <strong>Macro-F1</strong>, que promedia el éxito en las 5 coberturas dándoles el mismo peso a todas. Esto es vital porque el paisaje es muy desbalanceado: el bosque y las rocas ocupan el 98 %, mientras que el río y las vías son menos del 2 %. Un modelo que solo acierte en bosque tendría alto Accuracy pero sería inútil para la emergencia.<br><br>
+        El modelo ganador en equilibrio fue la <strong>Red Neuronal Artificial (ANN / MLP)</strong> con un Macro-F1 de <strong>0,7075</strong>, destacándose por su alta precisión en la detección de vías y pueblo (62,5 %), superando a SVM que tendía a confundirlos."
+      </blockquote>
+
+      <h3>Paso 4: Conclusión Territorial y Mapa Final</h3>
+      <blockquote>
+        "Con la Red Neuronal seleccionada, realizamos la inferencia ráster sobre los <strong>342.525 píxeles válidos (3.425,25 hectáreas)</strong> del cañón del río Ingará y exportamos el GeoTIFF a QGIS con su simbología oficial.<br><br>
+        <strong>La conclusión territorial es contundente:</strong><br>
+        • El <strong>34,2 % del cañón (1.172,13 hectáreas)</strong> quedó expuesto con suelo desnudo, roca y cicatrices de deslizamientos como impacto directo del sismo.<br>
+        • Esto evidencia la magnitud del desastre: laderas desprendidas que taponaron afluentes hacia el río Ingará y cortaron las vías terciarias que comunican a San José del Palmar.<br>
+        • El bosque húmedo remanente conservó el 63,9 % (2.189,51 ha), los pastos ocuparon el 1,1 % (38,22 ha) y el casco urbano el 0,6 % (19,93 ha)."
+      </blockquote>
+    </section>
+
+    <!-- SECCION 2: TABLA DE COMPETIDORES -->
+    <section class="card">
+      <h2>🏆 2. El Podio Comparativo de los 5 Modelos</h2>
+      <p>Todos los modelos fueron entrenados sobre los mismos 4 folds de desarrollo y evaluados exactamente sobre los 2.708 píxeles del conjunto de prueba independiente:</p>
+      
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Puesto</th>
+              <th>Macro-F1 (Equilibrio)</th>
+              <th>Accuracy (Aciertos)</th>
+              <th>Tiempo HPO (Velocidad)</th>
+              <th>Rol y Lección Técnica en el Proyecto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>🥇 <strong>1º</strong></td>
+              <td><span class="pill-win">ANN / MLP (0,7075)</span></td>
+              <td>SVM RBF (89,70 %)</td>
+              <td>KNN (4,17 s)</td>
+              <td><strong>ANN:</strong> Modelo campeón por equilibrio; no sacrificó vías ni río. Pintó el mapa final.</td>
+            </tr>
+            <tr>
+              <td>🥈 <strong>2º</strong></td>
+              <td>SVM RBF (0,6889)</td>
+              <td><span class="pill-win">ANN / MLP (88,74 %)</span></td>
+              <td>Reg. Logística (5,81 s)</td>
+              <td><strong>SVM:</strong> Campeón en separar la gran masa de bosque vs. roca con fronteras curvas.</td>
+            </tr>
+            <tr>
+              <td>🥉 <strong>3º</strong></td>
+              <td>Árbol CART (0,6794)</td>
+              <td>KNN (87,70 %)</td>
+              <td>SVM RBF (7,32 s)</td>
+              <td><strong>Árbol:</strong> Reveló que <code>B08</code> (NIR) y <code>B04</code> (Rojo) aportan el 66,5 % del poder de división.</td>
+            </tr>
+            <tr>
+              <td><strong>4º</strong></td>
+              <td>Reg. Logística (0,6516)</td>
+              <td>Árbol CART (86,41 %)</td>
+              <td>Árbol CART (7,51 s)</td>
+              <td><strong>Logística:</strong> Baseline obligatorio; demostró que las líneas rectas confunden suelo con pastos.</td>
+            </tr>
+            <tr>
+              <td><strong>5º</strong></td>
+              <td><span class="pill-loss">KNN (0,6159)</span></td>
+              <td><span class="pill-loss">Reg. Logística (82,87 %)</span></td>
+              <td>ANN / MLP (103,64 s)</td>
+              <td><strong>KNN:</strong> El más veloz, pero en 10 dimensiones falló detectando vías y pastos pequeños.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECCION 3: CUANTIFICACION DE AREAS -->
+    <section class="card">
+      <h2>🗺️ 3. Cuantificación Oficial de Superficies (3.425,25 ha)</h2>
+      <p>Resultado del despliegue del GeoTIFF categórico oficial (<code>outputs/rasters/landcover_ann.tif</code>) en QGIS:</p>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cobertura Terrestre</th>
+              <th>Color Oficial</th>
+              <th>Píxeles (10x10m)</th>
+              <th>Superficie (ha)</th>
+              <th>Superficie (km²)</th>
+              <th>Porcentaje (%)</th>
+              <th>Diagnóstico Territorial</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1</strong></td>
+              <td><strong>Bosque Húmedo</strong></td>
+              <td>Verde Oscuro</td>
+              <td>218.951</td>
+              <td><strong>2.189,51 ha</strong></td>
+              <td>21,895 km²</td>
+              <td><strong>63,92 %</strong></td>
+              <td>Matriz de selva nativa conservada.</td>
+            </tr>
+            <tr style="background-color: #FEF2F2;">
+              <td><strong>3</strong></td>
+              <td><strong>Suelo Desnudo / Derrumbes</strong></td>
+              <td>Rojo</td>
+              <td>117.213</td>
+              <td><strong>1.172,13 ha</strong></td>
+              <td>11,721 km²</td>
+              <td><strong>34,22 %</strong></td>
+              <td><strong>¡Impacto crítico!</strong> Cicatrices, roca y flujos cosísmicos.</td>
+            </tr>
+            <tr>
+              <td><strong>2</strong></td>
+              <td><strong>Pastos y Cultivos</strong></td>
+              <td>Verde Claro</td>
+              <td>3.822</td>
+              <td><strong>38,22 ha</strong></td>
+              <td>0,382 km²</td>
+              <td><strong>1,12 %</strong></td>
+              <td>Actividad agropecuaria de ladera.</td>
+            </tr>
+            <tr>
+              <td><strong>4</strong></td>
+              <td><strong>Urbano y Vías</strong></td>
+              <td>Naranja</td>
+              <td>1.993</td>
+              <td><strong>19,93 ha</strong></td>
+              <td>0,199 km²</td>
+              <td><strong>0,58 %</strong></td>
+              <td>Casco urbano y corredores viales aislados.</td>
+            </tr>
+            <tr>
+              <td><strong>5</strong></td>
+              <td><strong>Cuerpos de Agua</strong></td>
+              <td>Azul</td>
+              <td>546</td>
+              <td><strong>5,46 ha</strong></td>
+              <td>0,055 km²</td>
+              <td><strong>0,16 %</strong></td>
+              <td>Cauce visible del río Ingará.</td>
+            </tr>
+            <tr style="font-weight: 700; background-color: #F1F5F9;">
+              <td>—</td>
+              <td>TOTAL ANALIZADO</td>
+              <td>—</td>
+              <td>342.525</td>
+              <td>3.425,25 ha</td>
+              <td>34,252 km²</td>
+              <td>100,00 %</td>
+              <td>Dominio común de 10 bandas verificado.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECCION 4: LAS 10 BANDAS Y LIBRERIAS -->
+    <section class="card">
+      <h2>🛰️ 4. Las 10 Bandas de Sentinel-2 y el Stack de Python</h2>
+      
+      <h3>Las 10 Bandas (La Firma Espectral):</h3>
+      <ul>
+        <li><code>B02</code> (Azul - 490 nm): Agua y techos/vías.</li>
+        <li><code>B03</code> (Verde - 560 nm): Pico verde de la vegetación sana.</li>
+        <li><code>B04</code> (Rojo - 665 nm): Absorción por clorofila; contraste suelo vs. bosque.</li>
+        <li><code>B05</code> (Red Edge 1 - 705 nm): Rampa del borde rojo; sensibilidad a estrés foliar.</li>
+        <li><code>B06</code> (Red Edge 2 - 740 nm): Separa pasturas de dosel arbóreo denso.</li>
+        <li><code>B07</code> (Red Edge 3 - 783 nm): Hombro del infrarrojo; densidad de biomasa.</li>
+        <li><code>B08</code> (NIR amplio - 842 nm): Reflejo celular de hojas vivas; nulo en agua limpia.</li>
+        <li><code>B8A</code> (NIR estrecho - 865 nm): Infrarrojo libre de absorción de vapor de agua.</li>
+        <li><code>B11</code> (SWIR 1 - 1610 nm): Humedad edáfica y firmas minerales de roca/derrumbes.</li>
+        <li><code>B12</code> (SWIR 2 - 2190 nm): Minerales arcillosos y materiales asfálticos/urbanos.</li>
+      </ul>
+
+      <h3>Librerías de Python Utilizadas:</h3>
+      <ul>
+        <li><code>rasterio</code>: Lectura y escritura de rásteres satelitales en <code>EPSG:9377</code>.</li>
+        <li><code>geopandas</code> / <code>shapely</code>: Intersección espacial de los polígonos de verdad de terreno (<code>ground_truth.gpkg</code>).</li>
+        <li><code>pandas</code> / <code>numpy</code>: Manejo de la tabla tabular de datos (<code>dataset.tsv</code>, 14.155 registros).</li>
+        <li><code>scikit-learn</code>: Entrenamiento de modelos, optimización de hiperparámetros (<code>GridSearchCV</code>) y matrices de confusión.</li>
+        <li><code>joblib</code>: Serialización y guardado de los modelos entrenados (<code>.joblib</code>).</li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>Proyecto Final · Tecnologías Emergentes · Pontificia Universidad Javeriana · Bogotá, 2026</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
