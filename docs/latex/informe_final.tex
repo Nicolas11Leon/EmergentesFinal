@@ -328,8 +328,12 @@ Las matrices de confusión (orden: Agua, Bosque, Pastos, Suelo, Urbano) evidenci
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{figures/knn_confusion_matrix.png}
         \caption{KNN ($k=15$): 2.375/2.708.}
+    \end{subfigure}\\[0.3cm]
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{figures/logistic_regression_confusion_matrix.png}
+        \caption{Regresión Logística (baseline): 2.244/2.708.}
     \end{subfigure}
-    \caption{Matrices de confusión de los modelos evaluados sobre las 2.708 muestras del test independiente.}
+    \caption{Matrices de confusión de los cinco modelos sobre las 2.708 muestras del test independiente.}
     \label{fig:conf_matrices}
 \end{figure}
 
