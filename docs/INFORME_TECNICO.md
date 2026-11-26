@@ -102,11 +102,11 @@ En cumplimiento estricto de la Sección 3.1 del enunciado, el archivo `dataset.t
 
 | Class_ID | Clase de cobertura | Polígonos efectivos | Píxeles en Desarrollo | Píxeles en Prueba | Total píxeles (`dataset.tsv`) | Proporción (%) |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| **1** | **Bosque** | 12 | 6.194 | 1.222 | **7.416** | 52,39 % |
-| **3** | **Suelo Desnudo y Roca** | 115 | 3.679 | 1.189 | **4.868** | 34,39 % |
-| **4** | **Urbano y Vías** | 5 | 800 | 71 | **871** | 6,15 % |
-| **2** | **Pastos y Cultivos** | 8 | 636 | 203 | **839** | 5,93 % |
-| **5** | **Agua** | 5 | 138 | 23 | **161** | 1,14 % |
+| **1** | **Bosque** | 13 | 6.194 | 1.222 | **7.416** | 52,39 % |
+| **3** | **Suelo Desnudo y Roca** | 108 | 3.679 | 1.189 | **4.868** | 34,39 % |
+| **4** | **Urbano y Vías** | 6 | 800 | 71 | **871** | 6,15 % |
+| **2** | **Pastos y Cultivos** | 12 | 636 | 203 | **839** | 5,93 % |
+| **5** | **Agua** | 6 | 138 | 23 | **161** | 1,14 % |
 | — | **Total general** | **145** | **11.447** | **2.708** | **14.155** | **100,00 %** |
 
 *Tabla 2. Distribución de observaciones y polígonos efectivos por cobertura terrestre entre los conjuntos de desarrollo y prueba independiente.*
