@@ -47,20 +47,21 @@ Resultado esperado: `[APROBADO] Las metricas de los cinco modelos se reproducen.
 
 Los GeoTIFF no se suben a Git (`.gitignore`). La inferencia necesita el ZIP oficial
 `Emergentes_Rasters_Inferencia.zip`, con `stack_10bands.tif` y `mask_valid.tif`. Ambos
-archivos se copian en `data/processed/`.
+archivos se copian en `data/processed/`, y el ZIP se guarda en `data/raw/`. Por seguridad,
+los scripts de auditoría solo aceptan rutas dentro del repositorio.
 
 ## Ejecución oficial (PowerShell, desde la raíz del repositorio)
 
 ```powershell
 # 1. Auditar los insumos raster (stack de 10 bandas y máscara)
-.\.venv\Scripts\python.exe .\src\audit_rasters_final.py --zip "RUTA\Emergentes_Rasters_Inferencia.zip" --source-only
+.\.venv\Scripts\python.exe .\src\audit_rasters_final.py --zip .\data\raw\Emergentes_Rasters_Inferencia.zip --source-only
 
 # 2. Inferencia oficial de los cinco modelos (genera outputs/rasters/landcover_<modelo>.tif
 #    y outputs/metrics/inferencia_10bandas/area_stats_<modelo>.json)
 .\.venv\Scripts\python.exe .\src\predict_raster_hania.py --model all
 
 # 3. Auditoría píxel a píxel de los cinco GeoTIFF contra la máscara y los JSON
-.\.venv\Scripts\python.exe .\src\audit_rasters_final.py --zip "RUTA\Emergentes_Rasters_Inferencia.zip" `
+.\.venv\Scripts\python.exe .\src\audit_rasters_final.py --zip .\data\raw\Emergentes_Rasters_Inferencia.zip `
   --rasters-dir .\outputs\rasters --stats-dir .\outputs\metrics\inferencia_10bandas `
   --report .\outputs\auditorias\auditoria_final_5_modelos.json
 ```

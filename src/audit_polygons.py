@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import os
 import sys
 from pathlib import Path
 
@@ -25,6 +26,17 @@ from rasterio.mask import raster_geometry_mask
 from shapely.geometry import box
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+ROOT_DIR = os.path.realpath(Path(__file__).resolve().parents[1])
+
+
+def within_repo(path) -> Path:
+    """Resuelve la ruta y exige que quede dentro del repositorio (evita path traversal)."""
+    full = os.path.realpath(path)
+    if not full.startswith(ROOT_DIR + os.sep):
+        raise ValueError(f"Ruta fuera del repositorio: {path}")
+    return Path(full)
 
 
 def window_values(src, geom, all_touched: bool, fill=None):
@@ -128,6 +140,11 @@ def main() -> int:
     p.add_argument("--tsv", type=Path, default=ROOT / "data/training/dataset.tsv")
     p.add_argument("--out", type=Path, default=ROOT / "outputs/auditorias/auditoria_poligonos.csv")
     a = p.parse_args()
+    try:
+        a.stack, a.mask, a.gpkg, a.tsv, a.out = (within_repo(x) for x in (a.stack, a.mask, a.gpkg, a.tsv, a.out))
+    except ValueError as exc:
+        print(f"[ERROR] {exc}")
+        return 2
     for path in (a.stack, a.mask):
         if not path.is_file():
             print(f"[ERROR] Falta {path}. Extraer el ZIP oficial en data/processed/")

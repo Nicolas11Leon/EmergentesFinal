@@ -27,14 +27,14 @@ Una vez descargado `Emergentes_Rasters_Inferencia.zip`:
 ```powershell
 $repo = Join-Path ([Environment]::GetFolderPath('Desktop')) 'TRABAJOS JAVERIANA\Emergentes\Final Project\EmergentesFinal'
 Set-Location $repo
-.\.venv\Scripts\python.exe .\src\audit_rasters_final.py --zip "$HOME\Downloads\Emergentes_Rasters_Inferencia.zip" --source-only
+.\.venv\Scripts\python.exe .\src\audit_rasters_final.py --zip .\data\raw\Emergentes_Rasters_Inferencia.zip --source-only
 ```
 
 Cuando los **cinco GeoTIFF finales estén disponibles localmente** (por ejemplo después de generarlos con la implementación oficial de Hania, tras el merge):
 
 ```powershell
 .\.venv\Scripts\python.exe .\src\audit_rasters_final.py `
-  --zip "$HOME\Downloads\Emergentes_Rasters_Inferencia.zip" `
+  --zip .\data\raw\Emergentes_Rasters_Inferencia.zip `
   --rasters-dir .\outputs\rasters `
   --stats-dir .\outputs\metrics\inferencia_10bandas `
   --report .\outputs\auditorias\auditoria_final_5_modelos.json
