@@ -34,6 +34,15 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q tests
 ```
 
+## Verificación rápida (no requiere rásteres)
+
+```powershell
+# Recalcula Accuracy, Kappa y Macro-F1 de los 5 modelos desde los .joblib y los compara con outputs/metrics/
+.\.venv\Scripts\python.exe .\src\verify_metrics.py
+```
+
+Resultado esperado: `[APROBADO] Las metricas de los cinco modelos se reproducen.`
+
 ## Entradas externas (no versionadas)
 
 Los GeoTIFF no se suben a Git (`.gitignore`). La inferencia necesita el ZIP oficial
