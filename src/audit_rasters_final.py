@@ -11,6 +11,7 @@ Ejemplos:
 from __future__ import annotations
 
 import argparse
+import os
 import hashlib
 import json
 import shutil
@@ -37,6 +38,17 @@ class AuditError(ValueError):
 def need(condition: bool, message: str) -> None:
     if not condition:
         raise AuditError(message)
+
+
+ROOT_DIR = os.path.realpath(Path(__file__).resolve().parents[1])
+
+
+def within_repo(path) -> Path:
+    """Resuelve la ruta y exige que quede dentro del repositorio (evita path traversal)."""
+    full = os.path.realpath(path)
+    if not full.startswith(ROOT_DIR + os.sep):
+        raise ValueError(f"Ruta fuera del repositorio: {path}")
+    return Path(full)
 
 
 def sha256(path: Path) -> str:
@@ -194,7 +206,7 @@ def audit(source_zip: Path, raster_dir: Path | None, stats_dir: Path | None,
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--zip", type=Path, required=True, help="ZIP original de Nicolás")
+    parser.add_argument("--zip", type=Path, required=True, help="ZIP oficial copiado dentro del repo (p. ej. data/raw/); ZIP original de Nicolás")
     parser.add_argument("--rasters-dir", type=Path, default=Path("outputs/rasters"))
     parser.add_argument("--stats-dir", type=Path, default=Path("outputs/metrics/inferencia_10bandas"))
     parser.add_argument("--source-only", action="store_true", help="Verificar solo stack y máscara")
@@ -202,6 +214,11 @@ def main() -> int:
     parser.add_argument("--report", type=Path, help="Opcional: exportar evidencia de auditoría a JSON")
     args = parser.parse_args()
     try:
+        args.zip = within_repo(args.zip)
+        args.rasters_dir = within_repo(args.rasters_dir)
+        args.stats_dir = within_repo(args.stats_dir)
+        if args.report:
+            args.report = within_repo(args.report)
         result = audit(args.zip, args.rasters_dir, args.stats_dir,
                        source_only=args.source_only, expected=args.expected_pixels)
         if args.report:
@@ -209,7 +226,7 @@ def main() -> int:
             args.report.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
             print(f"[OK] Reporte: {args.report}")
         return 0
-    except (AuditError, OSError, zipfile.BadZipFile, json.JSONDecodeError) as exc:
+    except (AuditError, ValueError, OSError, zipfile.BadZipFile, json.JSONDecodeError) as exc:
         print(f"[ERROR] {exc}", file=sys.stderr)
         return 2
 
