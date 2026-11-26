@@ -44,8 +44,8 @@
 % ---------------------------------------------------------------------------
 % ESTADO DE LA AUDITORIA RASTER: unico punto que se actualiza tras ejecutar
 % src/audit_rasters_final.py sobre los GeoTIFF reales.
-\newcommand{\estadoauditoria}{La correspondencia celda a celda entre los GeoTIFF de salida y estos conteos está pendiente de la auditoría con \texttt{src/audit\_rasters\_final.py}; las cifras provienen de los archivos \texttt{area\_stats\_*.json} generados por la inferencia oficial.}
-\newcommand{\estadoauditoriacorto}{pendientes de auditoría directa sobre el GeoTIFF}
+\newcommand{\estadoauditoria}{Los cinco GeoTIFF se regeneraron desde el ZIP oficial de insumos y se auditaron celda a celda con \texttt{src/audit\_rasters\_final.py}: misma forma, CRS y transformación que el stack, NoData~=~0 fuera del dominio válido, códigos 1--5 únicamente dentro de él y conteos por clase idénticos a los de \texttt{area\_stats\_*.json} (reporte \texttt{outputs/auditorias/auditoria\_final\_5\_modelos.json}).}
+\newcommand{\estadoauditoriacorto}{cifras verificadas celda a celda sobre el GeoTIFF}
 % ---------------------------------------------------------------------------
 
 \title{\vspace{-1.2cm}
@@ -107,7 +107,7 @@ Verdad de terreno & 240 polígonos digitalizados en \texttt{data/vectors/ground\
 \label{tab:metadatos}
 \end{table}
 
-Los 95 polígonos sin muestras se encuentran dentro de la ROI y tienen un tamaño mediano similar al de los incluidos (0,30~ha frente a 0,34~ha). La explicación documentada es que sus píxeles quedan en zonas sin datos válidos de la escena; la verificación individual por polígono contra el stack y la máscara se reporta como pendiente en la Sección~\ref{sec:limitaciones}.
+Los 95 polígonos sin muestras se encuentran dentro de la ROI y tienen un tamaño mediano similar al de los incluidos (0,30~ha frente a 0,34~ha). La auditoría por polígono (\texttt{src/audit\_polygons.py}) comprobó que \textbf{ninguno de ellos tiene un solo píxel con valores válidos en las diez bandas}: 94 contienen NoData en al menos una banda en todos sus píxeles y uno queda, además, completamente fuera de la máscara de calidad. Por clase, se excluyeron 73 polígonos de Suelo Desnudo y Roca, 7 de Bosque, 6 de Agua, 6 de Urbano y Vías y 3 de Pastos y Cultivos.
 
 \section{Preparación del cubo multiespectral y extracción tabular}
 
@@ -141,7 +141,7 @@ El cubo ráster consolidado (\texttt{data/processed/stack\_10bands.tif}) reúne 
 \end{table}
 
 \subsection{Extracción y estructura del archivo tabular TSV}
-A través del módulo \texttt{src/02\_extract\_tsv.py}, se intersectaron los polígonos de verdad de terreno (\texttt{data/training/ground\_truth.gpkg}) con \texttt{stack\_10bands.tif}. Se aplicó el criterio geométrico \texttt{all\_touched=False} (centro del píxel contenido en el polígono) y reintento con \texttt{all\_touched=True} únicamente para polígonos lineales estrechos. Se descartaron valores nulos, infinitos y reflectancias físicas fuera de $[0, 1]$.
+A través del módulo \texttt{src/02\_extract\_tsv.py}, se intersectaron los polígonos de verdad de terreno (\texttt{data/training/ground\_truth.gpkg}) con \texttt{stack\_10bands.tif}. Se aplicó el criterio geométrico \texttt{all\_touched=False} (centro del píxel contenido en el polígono) y reintento con \texttt{all\_touched=True} únicamente para polígonos lineales estrechos. Se descartaron valores nulos o infinitos y reflectancias fuera de $(0, 1]$; el valor 0 corresponde a NoData del stack, de modo que solo ingresan píxeles con las diez bandas válidas. La extracción no aplica la máscara de calidad (véase la Sección~\ref{sec:limitaciones}). Regenerado desde el stack oficial, el TSV resulta idéntico byte a byte al archivo usado para entrenar (mismo SHA-256).
 
 El archivo resultante \texttt{data/training/dataset.tsv} (SHA-256: \texttt{f90bc6588...}) contiene 14.155 registros estructurados en 15 columnas:
 \begin{enumerate}[noitemsep,topsep=2pt]
@@ -408,14 +408,23 @@ El archivo GeoTIFF \texttt{landcover\_ann.tif} se importó en QGIS~3.44.13 (\nol
     \item \textbf{Pocos polígonos de prueba en clases minoritarias:} Agua y Urbano y Vías tienen un único polígono de prueba, y Pastos y Cultivos dos. Sus métricas por clase son frágiles y las diferencias entre modelos en esas clases no son generalizables.
     \item \textbf{Sin pruebas de significancia:} no se aplicaron pruebas estadísticas (por ejemplo, McNemar) entre modelos; las diferencias de desempeño se reportan como descriptivas.
     \item \textbf{Una sola escena:} sin una imagen previa al sismo no es posible separar el suelo expuesto por el evento del preexistente.
+    \item \textbf{Píxeles de entrenamiento fuera de la máscara de calidad:} 452 de los 14.155 píxeles del TSV (3,2~\%) caen fuera de \texttt{mask\_valid.tif}, porque la extracción no aplicó esa máscara. En desarrollo son 429 (345 de ellos de Urbano y Vías y 69 de Agua); en prueba son 23, incluidos 10 de los 23 píxeles de Agua. Estas muestras pueden estar afectadas por nubes o sombras, aunque la inferencia sí las excluye.
     \item \textbf{Cobertura de la inferencia:} se clasificó el 72,6~\% de las celdas de la máscara (342.525 de 471.579). Las 129.054 restantes tienen NoData en al menos una banda, concentrado en \texttt{B05}, \texttt{B06}, \texttt{B07} y \texttt{B8A}.
-    \item \textbf{Polígonos sin muestras:} 95 de los 240 polígonos digitalizados no aportaron píxeles; su causa individual (fuera de la escena, fuera de la máscara o NoData en alguna banda) está pendiente de verificación.
+    \item \textbf{Polígonos sin muestras:} 95 de los 240 polígonos digitalizados no aportaron píxeles porque ninguno de sus píxeles tiene datos válidos en las diez bandas; esto redujo especialmente las muestras independientes de Agua y Urbano y Vías.
     \item \textbf{Optimización acotada:} las grillas de hiperparámetros son pequeñas (50 combinaciones en total) y no se evaluaron ensambles como Random Forest o Boosting.
-    \item \textbf{Versión de serialización:} \texttt{models/logistic\_regression.joblib} fue serializado con scikit-learn~1.9.1; en el entorno de referencia (1.5.2) emite una advertencia de versión, aunque sus métricas de prueba se reproducen exactamente.
+    \item \textbf{Versión de serialización:} \texttt{models/logistic\_regression.joblib} fue serializado con scikit-learn~1.9.1; en el entorno de referencia (1.5.2) emite una advertencia de versión, aunque sus métricas de prueba y su mapa (conteos por clase) se reproducen exactamente.
 \end{itemize}
 
 \section{Reproducibilidad y entregables}
-El código fuente, los modelos serializados, las particiones y las métricas se encuentran en el repositorio del proyecto~\cite{repo2026}. El entorno de referencia es Python~3.12.10 con numpy~1.26.4, scikit-learn~1.5.2 y rasterio~1.4.4 (\texttt{requirements.txt}). Las métricas de prueba de los cinco modelos se recalcularon desde los archivos \texttt{.joblib} y coinciden exactamente con las reportadas en la Tabla~\ref{tab:comparacion_modelos}; la suite de pruebas automáticas (\texttt{pytest}, 8 pruebas) se ejecuta sin errores. El flujo de inferencia y auditoría se documenta en \texttt{README.md} y \texttt{docs/DECISIONES\_INFERENCIA.md}. Los entregables son: (i) el GeoTIFF temático \texttt{landcover\_ann.tif}; (ii) este informe técnico, y (iii) el código fuente en ZIP.
+El código fuente, los modelos serializados, las particiones y las métricas se encuentran en el repositorio del proyecto~\cite{repo2026}. El entorno de referencia es Python~3.12.10 con numpy~1.26.4, scikit-learn~1.5.2 y rasterio~1.4.4 (\texttt{requirements.txt}). Las métricas de prueba de los cinco modelos se recalcularon desde los archivos \texttt{.joblib} y coinciden exactamente con las reportadas en la Tabla~\ref{tab:comparacion_modelos}; la suite de pruebas automáticas (\texttt{pytest}, 8 pruebas) se ejecuta sin errores. A partir del ZIP oficial de insumos (\texttt{stack\_10bands.tif} y \texttt{mask\_valid.tif}) se verificó la cadena completa:
+\begin{enumerate}[noitemsep,topsep=2pt]
+    \item auditoría de insumos: 10 bandas, \texttt{EPSG:9377}, 10~m, 471.579 celdas en la máscara y 342.525 válidas;
+    \item el TSV regenerado con \texttt{src/02\_extract\_tsv.py} es idéntico byte a byte al de entrenamiento;
+    \item la auditoría por polígono replica el TSV en los 240 polígonos (14.155 píxeles);
+    \item las métricas de prueba se reproducen desde los \texttt{.joblib} (\texttt{src/verify\_metrics.py});
+    \item los cinco GeoTIFF regenerados con \texttt{src/predict\_raster\_hania.py} producen conteos idénticos a los publicados y aprueban la auditoría celda a celda.
+\end{enumerate}
+El GeoTIFF entregado (\texttt{landcover\_ann.tif}) tiene SHA-256 \texttt{99809c9b2ab419cf\ldots}. El flujo se documenta en \texttt{README.md} y \texttt{docs/DECISIONES\_INFERENCIA.md}. Los entregables son: (i) el GeoTIFF temático \texttt{landcover\_ann.tif}; (ii) este informe técnico, y (iii) el código fuente en ZIP.
 
 \section{Discusión y conclusiones}
 

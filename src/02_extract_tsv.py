@@ -124,7 +124,7 @@ def extract_tsv(config_path: str = "config/project.yaml") -> bool:
                 # Descartar píxeles con valores anómalos o NaN
                 if np.any(np.isnan(pixel_vals)) or np.any(np.isinf(pixel_vals)):
                     continue
-                if np.any(pixel_vals < 0.0) or np.any(pixel_vals > 1.0):
+                if np.any(pixel_vals <= 0.0) or np.any(pixel_vals > 1.0):  # <= 0: excluye NoData (0) en cualquier banda
                     continue
                     
                 rec = {
