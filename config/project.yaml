@@ -13,7 +13,7 @@ paths:
   processed_stack: "data/processed/stack_10bands.tif"
   quality_mask: "data/processed/mask_valid.tif"
   training_vectors: "data/vectors/ground_truth.gpkg"
-  roi_vector: "data/vectors/roi.gpkg"
+  roi_vector: "data/vectors/roi_palmar.geojson"
   dataset_tsv: "data/training/dataset.tsv"
   synthetic_tsv: "data/training/synthetic_dataset.tsv"
   models_dir: "models"

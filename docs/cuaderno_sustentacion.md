@@ -43,9 +43,9 @@
 ### La Conclusión Territorial y el Mapa Final
 > *"Con la Red Neuronal seleccionada, realizamos la inferencia ráster sobre los **342.525 píxeles válidos (3.425,25 hectáreas)** del cañón del río Ingará y exportamos el GeoTIFF a QGIS con su simbología oficial.*
 >
-> *La conclusión territorial es contundente:*
-> * *El **34,2 % del cañón (1.172,13 hectáreas)** quedó expuesto con suelo desnudo, roca y cicatrices de deslizamientos como impacto directo del sismo.*
-> * *Esto evidencia la magnitud del desastre: laderas desprendidas que taponaron afluentes hacia el río Ingará y cortaron las vías terciarias que comunican a San José del Palmar.*
+> *Lectura territorial (con cautela):*
+> * *El modelo clasificó el **34,2 % del área válida analizada (1.172,13 hectáreas)** como Suelo Desnudo y Roca. Es una predicción espectral, no una observación de campo.*
+> * *Con una sola escena posterior al sismo no podemos atribuir esas hectáreas al evento. Para eso haría falta una comparación con una imagen previa (análisis bitemporal) y validación adicional. Parte de esa superficie puede ser suelo expuesto anterior al sismo, y también puede haber confusión con pastos.*
 > * *El bosque húmedo remanente conservó el 63,9 % (2.189,51 ha), los pastos ocuparon el 1,1 % (38,22 ha) y el casco urbano el 0,6 % (19,93 ha)."*
 
 ---

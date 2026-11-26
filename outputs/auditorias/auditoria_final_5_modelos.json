@@ -1,0 +1,85 @@
+{
+  "source_zip": "C:\\Users\\afbba\\Downloads\\Emergentes_Rasters_Inferencia.zip",
+  "zip_sha256": "43d5b46a87a8b42a656750968c120adf53450393b0a6f09314e6378e2192519b",
+  "quality_pixels": 471579,
+  "valid_pixels": 342525,
+  "valid_area_ha": 3425.25,
+  "method": "mask>0 AND finite(all 10 bands) AND all bands>0 AND not NoData",
+  "models": {
+    "logistic_regression": {
+      "raster": "C:\\Users\\afbba\\OneDrive\\Escritorio\\TRABAJOS JAVERIANA\\Emergentes\\Final Project\\EmergentesFinal\\outputs\\rasters\\landcover_logistic_regression.tif",
+      "stats": "C:\\Users\\afbba\\OneDrive\\Escritorio\\TRABAJOS JAVERIANA\\Emergentes\\Final Project\\EmergentesFinal\\outputs\\metrics\\inferencia_10bandas\\area_stats_logistic_regression.json",
+      "raster_sha256": "bb83778a8a2aa79fd86bf98c43639e5053211b9008dcb4a53cb3ae4ad82abe0e",
+      "stats_sha256": "78d1d1611a08dc6eeeec24160f0210c3ac40514e267165e98c4d39125a26f83c",
+      "pixels": 342525,
+      "ha": 3425.25,
+      "per_class_pixels": {
+        "1": 252182,
+        "2": 25497,
+        "3": 61646,
+        "4": 2598,
+        "5": 602
+      }
+    },
+    "decision_tree": {
+      "raster": "C:\\Users\\afbba\\OneDrive\\Escritorio\\TRABAJOS JAVERIANA\\Emergentes\\Final Project\\EmergentesFinal\\outputs\\rasters\\landcover_decision_tree.tif",
+      "stats": "C:\\Users\\afbba\\OneDrive\\Escritorio\\TRABAJOS JAVERIANA\\Emergentes\\Final Project\\EmergentesFinal\\outputs\\metrics\\inferencia_10bandas\\area_stats_decision_tree.json",
+      "raster_sha256": "d66c5ced26a9b772e76478ce185cfe4de889ee7d73d8298195acb4a33c016e80",
+      "stats_sha256": "005dfe98c73af8d6f4410ace021e4f2f66615a6f846a50e3c08fab17aa0b3de4",
+      "pixels": 342525,
+      "ha": 3425.25,
+      "per_class_pixels": {
+        "1": 154452,
+        "2": 8048,
+        "3": 176850,
+        "4": 2570,
+        "5": 605
+      }
+    },
+    "svm": {
+      "raster": "C:\\Users\\afbba\\OneDrive\\Escritorio\\TRABAJOS JAVERIANA\\Emergentes\\Final Project\\EmergentesFinal\\outputs\\rasters\\landcover_svm.tif",
+      "stats": "C:\\Users\\afbba\\OneDrive\\Escritorio\\TRABAJOS JAVERIANA\\Emergentes\\Final Project\\EmergentesFinal\\outputs\\metrics\\inferencia_10bandas\\area_stats_svm.json",
+      "raster_sha256": "555089a396e3e04dc364d1b4ac61c6fd3f996e65de548b989eb557189de97be7",
+      "stats_sha256": "d720de569a79db13a9bf32846c32e217ee40e555e4e8cb4d311feeb457f7ffd9",
+      "pixels": 342525,
+      "ha": 3425.25,
+      "per_class_pixels": {
+        "1": 218001,
+        "2": 3726,
+        "3": 118054,
+        "4": 2223,
+        "5": 521
+      }
+    },
+    "knn": {
+      "raster": "C:\\Users\\afbba\\OneDrive\\Escritorio\\TRABAJOS JAVERIANA\\Emergentes\\Final Project\\EmergentesFinal\\outputs\\rasters\\landcover_knn.tif",
+      "stats": "C:\\Users\\afbba\\OneDrive\\Escritorio\\TRABAJOS JAVERIANA\\Emergentes\\Final Project\\EmergentesFinal\\outputs\\metrics\\inferencia_10bandas\\area_stats_knn.json",
+      "raster_sha256": "353e96704e5ac0d4caddcfc9a0c55cdf8df333c8716d96dba04fc6c7cf698363",
+      "stats_sha256": "a6f48c7d51dbd4959bbaf30920f12eefb1a90988f0cce867029ba4eb3048e856",
+      "pixels": 342525,
+      "ha": 3425.25,
+      "per_class_pixels": {
+        "1": 222336,
+        "2": 2392,
+        "3": 114870,
+        "4": 2295,
+        "5": 632
+      }
+    },
+    "ann": {
+      "raster": "C:\\Users\\afbba\\OneDrive\\Escritorio\\TRABAJOS JAVERIANA\\Emergentes\\Final Project\\EmergentesFinal\\outputs\\rasters\\landcover_ann.tif",
+      "stats": "C:\\Users\\afbba\\OneDrive\\Escritorio\\TRABAJOS JAVERIANA\\Emergentes\\Final Project\\EmergentesFinal\\outputs\\metrics\\inferencia_10bandas\\area_stats_ann.json",
+      "raster_sha256": "99809c9b2ab419cfd2b203d7c42a68b7c1f0523b97d623e164c8ba34a0d80fec",
+      "stats_sha256": "1dd5cdcd851e2c1ad457b929fc87c66fd25c6f553fe6603f9142eea80fad5ff3",
+      "pixels": 342525,
+      "ha": 3425.25,
+      "per_class_pixels": {
+        "1": 218951,
+        "2": 3822,
+        "3": 117213,
+        "4": 1993,
+        "5": 546
+      }
+    }
+  }
+}
