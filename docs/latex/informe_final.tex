@@ -41,6 +41,13 @@
 
 \captionsetup{font=small,labelfont={bf,color=javnavy},skip=6pt}
 
+% ---------------------------------------------------------------------------
+% ESTADO DE LA AUDITORIA RASTER: unico punto que se actualiza tras ejecutar
+% src/audit_rasters_final.py sobre los GeoTIFF reales.
+\newcommand{\estadoauditoria}{La correspondencia celda a celda entre los GeoTIFF de salida y estos conteos está pendiente de la auditoría con \texttt{src/audit\_rasters\_final.py}; las cifras provienen de los archivos \texttt{area\_stats\_*.json} generados por la inferencia oficial.}
+\newcommand{\estadoauditoriacorto}{pendientes de auditoría directa sobre el GeoTIFF}
+% ---------------------------------------------------------------------------
+
 \title{\vspace{-1.2cm}
     \textbf{\Large Pontificia Universidad Javeriana}\\[0.2cm]
     \textbf{\large Departamento de Ingeniería de Sistemas — Tecnologías Emergentes}\\[0.6cm]
@@ -51,7 +58,7 @@
 \author{
     \textbf{Nicolás León} \quad \textbf{Andrés Felipe Barrios} \quad \textbf{Hania Valentina Carreño} \quad \textbf{Jorge Sierra}\\[0.2cm]
     \normalsize Profesor: Andrés Oswaldo Calderón Romero, Ph.D.\\[0.1cm]
-    \small Bogotá D.C., Colombia · 19 de noviembre de 2026
+    \small Bogotá D.C., Colombia · 26 de noviembre de 2026
 }
 \date{}
 
@@ -61,19 +68,46 @@
 \vspace{-0.6cm}
 
 \begin{abstract}
-\noindent Este informe documenta el desarrollo completo de un flujo de trabajo reproducible de Inteligencia Artificial Geoespacial (GeoAI) para discriminar y cartografiar cinco clases de cobertura terrestre en el municipio de San José del Palmar (Chocó, Colombia), en el cañón del río Ingará, afectado por el sismo de magnitud $M_w$~7,4 del 10 de agosto de 2026. A partir de una escena Sentinel-2 MSI Nivel-2A (reflectancia BOA) del 18 de agosto de 2026, se conformó un cubo multiespectral de diez bandas remuestreado a una grilla canónica de 10~m en el sistema de coordenadas oficial MAGNA-SIRGAS Origen Nacional (\texttt{EPSG:9377}). Mediante 145 polígonos de verdad de terreno, se estructuró un conjunto de datos tabular de 14.155 píxeles puros. Para garantizar independencia estadística estricta y eliminar la sobrestimación por autocorrelación espacial (\textit{zero spatial data leakage}), la partición se realizó a nivel de \texttt{Polygon\_ID}, aislando 29 polígonos (2.708 píxeles) para prueba independiente y 116 polígonos (11.447 píxeles) en cuatro \textit{folds} espaciales de desarrollo. Sobre estos folds se optimizaron cinco arquitecturas mediante \texttt{GridSearchCV} con \texttt{scoring="f1\_macro"}: Regresión Logística (baseline), Árbol de Decisión (CART), Support Vector Machines (SVM con núcleo RBF), K-Nearest Neighbors (KNN) y una Red Neuronal Artificial (ANN / MLP). En el conjunto de prueba independiente ($N = 2.708$), SVM RBF alcanzó la mayor Exactitud Global (89,70~\%) y coeficiente Kappa (0,8283), mientras que la ANN/MLP demostró la mejor generalización en clases minoritarias con el mayor Macro-F1 del estudio (0,7075 en test y 0,7103 en validación cruzada), destacando por una precisión del 62,50~\% en Urbano y Vías frente al 39,45~\% de SVM. El análisis del árbol de decisión determinó que las bandas \texttt{B08} (NIR, 33,90~\%) y \texttt{B04} (Rojo, 32,58~\%) concentran el 66,48~\% del poder discriminante primario, complementadas por \texttt{B02} (Azul, 24,18~\%) y \texttt{B11} (SWIR~1, 4,42~\%). El despliegue de la ANN sobre los 342.525 píxeles válidos con cobertura completa en las diez bandas cuantificó una superficie de 3.425,25~ha: 2.189,51~ha de Bosque (63,92~\%), 1.172,13~ha de Suelo Desnudo, roca y cicatrices de remoción en masa (34,22~\%), 38,22~ha de Pastos y Cultivos (1,12~\%), 19,93~ha de Urbano y Vías (0,58~\%) y 5,46~ha de Cuerpos de Agua (0,16~\%), logrando coincidencia verificada al 100~\% pixel a pixel entre el ráster GeoTIFF y la cartografía elaborada en QGIS.
+\noindent Este informe documenta el desarrollo completo de un flujo de trabajo reproducible de Inteligencia Artificial Geoespacial (GeoAI) para discriminar y cartografiar cinco clases de cobertura terrestre en el municipio de San José del Palmar (Chocó, Colombia), en el cañón del río Ingará, afectado por el sismo de magnitud $M_w$~7,4 del 10 de agosto de 2026. A partir de una escena Sentinel-2 MSI Nivel-2A (reflectancia BOA) del 18 de agosto de 2026, se conformó un cubo multiespectral de diez bandas remuestreado a una grilla canónica de 10~m en el sistema de coordenadas oficial MAGNA-SIRGAS Origen Nacional (\texttt{EPSG:9377}). A partir de 145 polígonos de verdad de terreno con píxeles válidos, se estructuró un conjunto tabular de 14.155 píxeles etiquetados. Para disminuir el riesgo de fuga entre muestras del mismo polígono, la partición se realizó a nivel de \texttt{Polygon\_ID}, reservando 29 polígonos (2.708 píxeles) para prueba independiente y 116 polígonos (11.447 píxeles) en cuatro \textit{folds} espaciales de desarrollo. Sobre estos folds se optimizaron cinco arquitecturas mediante \texttt{GridSearchCV} con \texttt{scoring="f1\_macro"}: Regresión Logística (baseline), Árbol de Decisión (CART), Support Vector Machines (SVM con núcleo RBF), K-Nearest Neighbors (KNN) y una Red Neuronal Artificial (ANN / MLP). En el conjunto de prueba independiente ($N = 2.708$), SVM RBF alcanzó la mayor Exactitud Global (89,70~\%) y coeficiente Kappa (0,8283), mientras que la ANN/MLP logró el mayor Macro-F1 (0,7075 en test y 0,7103 en validación cruzada), métrica que pondera por igual las cinco clases; por ese criterio, definido antes de la evaluación, se seleccionó como modelo del mapa temático. En Urbano y Vías la precisión fue de 62,50~\% para ANN frente a 39,45~\% para SVM. Las importancias Gini del árbol destacaron \texttt{B08} (33,90~\%) y \texttt{B04} (32,58~\%), sin demostrar que cada banda sea indispensable. La inferencia se restringió a los 342.525 píxeles con datos válidos en las diez bandas (3.425,25~ha). Para ANN se registraron 2.189,51~ha de Bosque (63,92~\%), 1.172,13~ha de Suelo Desnudo y Roca (34,22~\%), 38,22~ha de Pastos y Cultivos (1,12~\%), 19,93~ha de Urbano y Vías (0,58~\%) y 5,46~ha de Agua (0,16~\%), \estadoauditoriacorto. Estos valores son predicciones espectrales de una sola escena posterior al evento y no demuestran por sí solos causalidad sísmica.
 \end{abstract}
 
 \vspace{0.3cm}
-\noindent\textbf{Palabras clave:} GeoAI, Sentinel-2, MAGNA-SIRGAS, validación espacial agrupada, SVM, Red Neuronal Artificial, San José del Palmar, cicatrices de deslizamiento.
+\noindent\textbf{Palabras clave:} GeoAI, Sentinel-2, MAGNA-SIRGAS, validación espacial agrupada, SVM, Red Neuronal Artificial, San José del Palmar, inferencia ráster.
 
 \section{Introducción y contextualización del área de estudio}
 
 El monitoreo ambiental mediante satélites ópticos de observación de la Tierra ha evolucionado desde clasificaciones manuales de escritorio hacia flujos de Inteligencia Artificial Geoespacial (GeoAI) desacoplados, programáticos y orientados a la reproducibilidad computacional. En regiones montañosas tropicales como la vertiente pacífica de la Cordillera Occidental colombiana, la alta nubosidad, la accidentada topografía y la dinámica de remoción en masa exigen metodologías rigurosas que impidan sobreestimar el rendimiento predictivo de los algoritmos.
 
-El 10 de agosto de 2026 a las 12:34 UTC (7:34 a.~m. hora local), el Servicio Geológico Colombiano registró un evento sísmico de magnitud de momento $M_w$~7,4 a una profundidad intermedia de 103~km con epicentro en el municipio de San José del Palmar (Chocó)~\cite{sgc2026}. La energía liberada reactivó laderas inestables y desencadenó cientos de fallas y flujos de detritos a lo largo del cañón del río Ingará, exponiendo sustrato rocoso, alterando el cauce fluvial e interrumpiendo las vías de comunicación terrestre.
+El 10 de agosto de 2026 a las 12:34 UTC (7:34 a.~m. hora local), el Servicio Geológico Colombiano registró un evento sísmico de magnitud de momento $M_w$~7,4 a una profundidad intermedia de 103~km con epicentro en el municipio de San José del Palmar (Chocó)~\cite{sgc2026}. La escena posterior al evento permite estudiar coberturas relevantes para el seguimiento territorial, como suelo expuesto, vegetación y cauces. Sin comparación bitemporal ni validación externa adicional, la clasificación por sí sola no atribuye deslizamientos concretos al sismo.
 
 Como insumo óptico se seleccionó una escena \textbf{Sentinel-2 MSI Nivel-2A} adquirida el 18 de agosto de 2026 (\texttt{S2C\_MSIL2A\_20260818T153621\_N0512\_R068\_T18NUL}), ocho días después del sismo, con reflectancia de superficie corregida atmosféricamente (\textit{Bottom-of-Atmosphere}, BOA). El objetivo del estudio es evaluar de forma rigurosa y comparativa cinco arquitecturas de aprendizaje automático supervisado para discriminar cinco categorías de cobertura: (1)~Bosque, (2)~Pastos y Cultivos, (3)~Suelo Desnudo y Roca, (4)~Urbano y Vías, y (5)~Agua, desplegando el clasificador seleccionado sobre toda la escena para cuantificar la superficie territorial post-evento en hectáreas y kilómetros cuadrados.
+
+\subsection{Zona de estudio, metadatos de la escena y verdad de terreno}
+La Tabla~\ref{tab:metadatos} resume los datos de entrada de la Fase~1. La región de interés (ROI) es un polígono de 4.921,30~ha sobre el cañón del río Ingará (\texttt{data/vectors/roi\_palmar.geojson}). La grilla de trabajo cubre 7.177,74~ha; dentro de ella, la máscara de calidad (\texttt{mask\_valid.tif}) habilita 471.579 celdas.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Atributo} & \textbf{Valor} \\
+\midrule
+Evento de referencia & Sismo $M_w$~7,4, 10/08/2026, 12:34~UTC, profundidad 103~km (SGC)~\cite{sgc2026} \\
+Producto & \texttt{S2C\_MSIL2A\_20260818T153621\_N0512\_R068\_T18NUL} \\
+Sensor / nivel & Sentinel-2C MSI, Nivel-2A (reflectancia de superficie BOA) \\
+Adquisición & 18/08/2026, 15:36:21~UTC (órbita relativa R068, tesela T18NUL, línea base N0512) \\
+ROI (WGS84) & Longitud $-76{,}3095^\circ$ a $-76{,}2147^\circ$; latitud $4{,}8699^\circ$ a $4{,}9312^\circ$ \\
+CRS de trabajo & MAGNA-SIRGAS Origen Nacional (\texttt{EPSG:9377}); CRS nativo WGS~84 / UTM~18N (\texttt{EPSG:32618}) \\
+Grilla & $1.054 \times 681$ píxeles de $10 \times 10$~m (717.774 celdas) \\
+Bandas & 10: \texttt{B02}, \texttt{B03}, \texttt{B04}, \texttt{B05}, \texttt{B06}, \texttt{B07}, \texttt{B08}, \texttt{B8A}, \texttt{B11}, \texttt{B12} \\
+Verdad de terreno & 240 polígonos digitalizados en \texttt{data/vectors/ground\_truth.gpkg}; 145 aportaron píxeles válidos al TSV \\
+\bottomrule
+\end{tabularx}
+\caption{Metadatos de la escena, de la región de estudio y de la verdad de terreno (Fase~1).}
+\label{tab:metadatos}
+\end{table}
+
+Los 95 polígonos sin muestras se encuentran dentro de la ROI y tienen un tamaño mediano similar al de los incluidos (0,30~ha frente a 0,34~ha). La explicación documentada es que sus píxeles quedan en zonas sin datos válidos de la escena; la verificación individual por polígono contra el stack y la máscara se reporta como pendiente en la Sección~\ref{sec:limitaciones}.
 
 \section{Preparación del cubo multiespectral y extracción tabular}
 
@@ -81,7 +115,7 @@ Como insumo óptico se seleccionó una escena \textbf{Sentinel-2 MSI Nivel-2A} a
 Para evitar distorsiones métricas y asegurar compatibilidad con la cartografía oficial del Instituto Geográfico Agustín Codazzi (IGAC), todas las capas fueron reproyectadas al sistema canónico nacional \textbf{MAGNA-SIRGAS Origen Nacional (\texttt{EPSG:9377})}. Se consolidó una grilla canónica de $1.054 \times 681$ píxeles a una resolución espacial de $10\text{ m} \times 10\text{ m}$ por celda ($100\text{ m}^2 = 0,01\text{ ha}$), preservando la matriz de transformación afín oficial.
 
 \subsection{Stack multiespectral de 10 bandas}
-El cubo ráster consolidado (\texttt{data/processed/stack\_10bands.tif}) reúne diez bandas espectrales del instrumento MSI. Las bandas nativas de 20~m fueron remuestreadas a la resolución común de 10~m mediante interpolación bilineal (Tabla~\ref{tab:bandas}):
+El cubo ráster consolidado (\texttt{data/processed/stack\_10bands.tif}) reúne diez bandas espectrales del instrumento MSI~\cite{lillesand2015}. Las bandas nativas de 20~m fueron remuestreadas a la resolución común de 10~m mediante interpolación bilineal (Tabla~\ref{tab:bandas}):
 
 \begin{table}[H]
 \centering
@@ -136,20 +170,20 @@ El archivo resultante \texttt{data/training/dataset.tsv} (SHA-256: \texttt{f90bc
 
 \section{Metodología de validación espacial y modelado}
 
-\subsection{Estrategia de partición espacial agrupada (\textit{Zero Spatial Leakage})}
+\subsection{Estrategia de partición espacial agrupada por polígono}
 La autocorrelación espacial inherente a las imágenes de satélite invalida el uso del remuestreo aleatorio tradicional (\textit{random k-fold} o \textit{train\_test\_split} por fila): píxeles contiguos pertenecientes a una misma masa forestal o cicatriz comparten reflectancias casi idénticas. Mezclarlos entre entrenamiento y prueba produce una sobreestimación artificial del desempeño al evaluar píxeles prácticamente memorizados.
 
-Para garantizar rigor metodológico, la unidad de separación en \texttt{src/spatial\_split.py} es el \texttt{Polygon\_ID}:
+Para reducir este sesgo, la unidad de separación en \texttt{src/spatial\_split.py} es el \texttt{Polygon\_ID}:
 \begin{itemize}[noitemsep,topsep=2pt]
     \item \textbf{Conjunto de desarrollo (Dev):} 116 polígonos con 11.447 píxeles (80,87~\% del dataset), organizados en 4 folds espaciales estratificados para ajuste y búsqueda de hiperparámetros.
     \item \textbf{Conjunto de prueba independiente (Test):} 29 polígonos con 2.708 píxeles (19,13~\% del dataset). Ningún píxel de estos polígonos intervino directa ni indirectamente en el entrenamiento ni en la optimización.
 \end{itemize}
-Las particiones oficiales se registraron en \texttt{data/training/spatial\_partitions.json} con semilla fija 42.
+Las particiones oficiales se registraron en \texttt{data/training/spatial\_partitions.json} con semilla fija 42. Se comprobó que ningún polígono aparece a la vez en desarrollo y prueba. La partición por polígono evita compartir píxeles de un mismo polígono entre conjuntos, aunque no elimina necesariamente la autocorrelación entre polígonos vecinos~\cite{roberts2017}. El conjunto de prueba contiene 3 polígonos de Bosque, 2 de Pastos y Cultivos, 22 de Suelo Desnudo y Roca, 1 de Urbano y Vías y 1 de Agua; por ello, las métricas de las clases minoritarias dependen de muy pocos polígonos independientes.
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{c l c c c c c}
+\resizebox{\textwidth}{!}{\begin{tabular}{c l c c c c c}
 \toprule
 \textbf{Class\_ID} & \textbf{Cobertura terrestre} & \textbf{Polígonos} & \textbf{Píxeles Dev} & \textbf{Píxeles Test} & \textbf{Total píxeles} & \textbf{Proporción (\%)} \\
 \midrule
@@ -161,13 +195,13 @@ Las particiones oficiales se registraron en \texttt{data/training/spatial\_parti
 \midrule
 — & \textbf{Total}          & \textbf{145} & \textbf{11.447} & \textbf{2.708} & \textbf{14.155} & \textbf{100,00\,\%} \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \caption{Distribución por clase y partición espacial en \texttt{dataset.tsv}.}
 \label{tab:clases_particion}
 \end{table}
 
 \subsection{Implementación y optimización de hiperparámetros (HPO)}
-Cada arquitectura se empaquetó en un \texttt{Pipeline} de Scikit-Learn incorporando estandarización (\texttt{StandardScaler}) en los modelos sensibles a escala (LR, SVM, KNN, ANN). La optimización se realizó con \texttt{GridSearchCV} sobre los 4 folds de desarrollo evaluando exclusivamente la métrica no sesgada \textbf{Macro-F1}:
+Cada arquitectura se empaquetó en un \texttt{Pipeline} de Scikit-Learn~\cite{pedregosa2011} incorporando estandarización (\texttt{StandardScaler}) en los modelos sensibles a escala (LR, SVM, KNN, ANN). La optimización se realizó con \texttt{GridSearchCV} sobre los 4 folds de desarrollo con la métrica \textbf{Macro-F1}, que pondera por igual las cinco clases y por ello es menos sensible al desbalance que la exactitud global. Las grillas, definidas en \texttt{config/project.yaml}, suman 50 combinaciones (LR~6, Árbol~24, SVM~6, KNN~8, ANN~6), cada una evaluada en los 4 folds:
 \begin{enumerate}[noitemsep,topsep=2pt]
     \item \textbf{Regresión Logística (Baseline obligatorio):} Modelo lineal multiclase con penalización $L_2$. Mejor configuración: $C = 1,0$, \texttt{class\_weight='balanced'}, \texttt{max\_iter=1000}.
     \item \textbf{Árbol de Decisión (CART):} Modelo jerárquico ortogonal por impureza de Gini. Mejor configuración: \texttt{max\_depth=8}, \texttt{min\_samples\_leaf=2}, \texttt{class\_weight='balanced'}.
@@ -189,7 +223,7 @@ En correspondencia con la Sección 3.2 del enunciado, la extracción de la impor
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{c l l c r X}
+\begin{tabularx}{\textwidth}{c l l c r X}
 \toprule
 \textbf{Rango} & \textbf{Banda} & \textbf{Región espectral} & $\boldsymbol{\lambda_c}$ \textbf{(nm)} & \textbf{Importancia (\%)} & \textbf{Interpretación en el paisaje montañoso} \\
 \midrule
@@ -202,22 +236,22 @@ En correspondencia con la Sección 3.2 del enunciado, la extracción de la impor
 7 & \texttt{B12} & SWIR 2 & 2190 & \textbf{0,86\,\%} & Respuestas arcillosas en taludes expuestos y vialidad. \\
 8--10 & \texttt{B03, B07, B06} & Verde / RE 2--3 & — & \textbf{0,20\,\%} & Información colineal absorbida por los cortes superiores en \texttt{B08} y \texttt{B04}. \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \caption{Desglose de importancia de bandas espectrales del Árbol de Decisión.}
 \label{tab:importancia}
 \end{table}
 
-Las bandas \texttt{B08} (33,90~\%) y \texttt{B04} (32,58~\%) concentran el \textbf{66,48~\%} del poder explicativo primario, ratificando la base biofísica de la reflectancia vegetal. Las bandas \texttt{B02} (24,18~\%), \texttt{B11} (4,42~\%) y \texttt{B05} (2,31~\%) proporcionan el 30,91~\% adicional imprescindible para resolver la ambigüedad entre agua, vías, pastos y roca meteorizada.
+Las bandas \texttt{B08} (33,90~\%) y \texttt{B04} (32,58~\%) concentran el \textbf{66,48~\%} de la importancia Gini del árbol entrenado. \texttt{B02} (24,18~\%), \texttt{B11} (4,42~\%) y \texttt{B05} (2,31~\%) también aportan a sus decisiones. Estas cifras describen el uso de las bandas en este estimador, pero no prueban que cada banda sea indispensable; eso exigiría un experimento de eliminación de características.
 
 \section{Resultados comparativos y evaluación en el test independiente}
 
 \subsection{Tabla maestra comparativa de las cinco arquitecturas}
-La Tabla~\ref{tab:comparacion_modelos} resume el desempeño global sobre las 2.708 muestras de prueba independientes ($N = 2.708$), reportando Exactitud Global, coeficiente Kappa de Cohen, Macro-F1, Weighted-F1, el promedio obtenido en validación cruzada sobre desarrollo y el tiempo de optimización:
+La Tabla~\ref{tab:comparacion_modelos} resume el desempeño global sobre las 2.708 muestras de prueba independientes ($N = 2.708$), reportando Exactitud Global, coeficiente Kappa de Cohen~\cite{congalton2019}, Macro-F1, Weighted-F1, el promedio obtenido en validación cruzada sobre desarrollo y el tiempo de optimización:
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{l c c c c c r}
+\resizebox{\textwidth}{!}{\begin{tabular}{l c c c c c r}
 \toprule
 \textbf{Modelo} & \textbf{Overall Accuracy} & \textbf{Kappa ($\boldsymbol{\kappa}$)} & \textbf{Macro-F1 (Test)} & \textbf{Weighted-F1} & \textbf{CV Macro-F1 (Dev)} & \textbf{Tiempo HPO} \\
 \midrule
@@ -227,7 +261,7 @@ La Tabla~\ref{tab:comparacion_modelos} resume el desempeño global sobre las 2.7
 \textbf{Reg. Logística} (Baseline)   & 82,87\,\% (2.244/2.708) & 0,7343 & 0,6516 & 0,8505 & 0,7039 $\pm$ 0,0749 & 5,81 s \\
 \textbf{KNN} ($k=15$, distance)      & 87,70\,\% (2.375/2.708) & 0,7936 & 0,6159 & 0,8708 & 0,6805 $\pm$ 0,0961 & 4,17 s \\
 \bottomrule
-\end{tabularx}
+\end{tabular}}
 \caption{Comparación estadística general de las cinco arquitecturas evaluadas en el conjunto de prueba independiente.}
 \label{tab:comparacion_modelos}
 \end{table}
@@ -238,7 +272,7 @@ En cumplimiento explícito de la Sección 3.3 del enunciado, la Tabla~\ref{tab:m
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{l c c c c c c}
+\resizebox{\textwidth}{!}{\begin{tabular}{l c c c c c c}
 \toprule
 \textbf{Clase (Soporte Test)} & \textbf{Métrica} & \textbf{Reg. Logística} & \textbf{Árbol Decisión} & \textbf{SVM (RBF)} & \textbf{KNN ($\boldsymbol{k=15}$)} & \textbf{ANN / MLP} \\
 \midrule
@@ -267,7 +301,7 @@ En cumplimiento explícito de la Sección 3.3 del enunciado, la Tabla~\ref{tab:m
 & Recall    & 0,5915 & 0,5775 & \textbf{0,6056} & 0,4789 & 0,5634 \\
 & F1-Score  & 0,3925 & 0,5000 & 0,4778 & 0,3285 & \textbf{0,5926} \\
 \bottomrule
-\end{tabularx}
+\end{tabular}}
 \caption{Precisión, Exhaustividad (Recall) y F1-Score por cobertura en el test independiente ($N = 2.708$).}
 \label{tab:metricas_clase}
 \end{table}
@@ -302,21 +336,21 @@ Las matrices de confusión (orden: Agua, Bosque, Pastos, Suelo, Urbano) evidenci
 \begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
     \item \textbf{Bosque (1.222 píxeles):} Separación perfecta en las cinco arquitecturas ($Recall = 1,0000$), sin ninguna omisión gracias a la alta reflectancia en \texttt{B08} y absorción en \texttt{B04}.
     \item \textbf{Suelo Desnudo y Roca (1.189 píxeles):} SVM RBF obtiene el mejor compromiso de frontera no lineal (1.067 aciertos, $F1 = 0,9023$), seguido por KNN (1.063) y ANN (1.024). Por el contrario, la Regresión Logística lineal desvía 299 píxeles de Suelo hacia Pastos y 75 hacia Urbano, castigando su recall a 68,38~\%.
-    \item \textbf{Urbano y Vías (71 píxeles):} Representa la clase más exigente por mezcla espectral con suelo seco y techos metálicos/asfálticos. La \textbf{ANN/MLP logra una superioridad contundente}: alcanza una precisión de \textbf{62,50~\%} y un F1 de \textbf{0,5926} cometiendo únicamente 24 falsos positivos urbanos (frente a 66 en SVM, 101 en Regresión Logística y 102 en KNN).
-    \item \textbf{Agua (23 píxeles):} Todos los clasificadores detectan los 23 píxeles del cauce del río Ingará ($Recall = 1,0000$), pero cometen entre 25 y 28 comisiones provenientes de vías asfaltadas oscuras y sombras de ladera.
+    \item \textbf{Urbano y Vías (71 píxeles):} Representa la clase más exigente por mezcla espectral con suelo seco y techos metálicos/asfálticos. La \textbf{ANN/MLP} obtiene la mayor precisión (\textbf{62,50~\%}) y el mayor F1 (\textbf{0,5926}), con 24 falsos positivos urbanos frente a 66 en SVM, 101 en Regresión Logística y 102 en KNN. Como el test incluye un único polígono urbano, esta ventaja debe interpretarse con cautela.
+    \item \textbf{Agua (23 píxeles):} Todos los clasificadores detectan los 23 píxeles del polígono de prueba de Agua ($Recall = 1,0000$), pero cometen entre 25 y 28 comisiones, todas provenientes de píxeles de referencia de Urbano y Vías.
 \end{itemize}
 
 \section{Inferencia ráster completa y cuantificación de áreas}
 
-\subsection{Dominio de inferencia y verificación pixel a pixel}
-Para cumplir con la Sección 3.4 del enunciado, se ejecutó la predicción sobre el cubo multiespectral completo en \texttt{EPSG:9377}. Si bien la máscara general (\texttt{mask\_valid.tif}) delimita 471.579 celdas libres de nubes en el visible, las bandas \textit{Red Edge} y NIR estrecho (\texttt{B05}, \texttt{B06}, \texttt{B07}, \texttt{B8A}) presentan bordes con \texttt{NoData} en los márgenes de la adquisición. Siguiendo el principio de rigor físico de no imputar reflectancias sintéticas, la inferencia oficial se evaluó sobre la \textbf{intersección física estricta de las diez bandas: exactamente 342.525 píxeles válidos (3.425,25~ha = 34,2525~$\text{km}^2$)}.
+\subsection{Dominio de inferencia}
+Para cumplir con la Sección 3.4 del enunciado~\cite{calderon2026}, se ejecutó la predicción sobre el cubo multiespectral completo en \texttt{EPSG:9377}. Si bien la máscara general (\texttt{mask\_valid.tif}) delimita 471.579 celdas libres de nubes en el visible, las bandas \textit{Red Edge} y NIR estrecho (\texttt{B05}, \texttt{B06}, \texttt{B07}, \texttt{B8A}) presentan bordes con \texttt{NoData} en los márgenes de la adquisición. Para no imputar reflectancias, la inferencia oficial (\texttt{src/predict\_raster\_hania.py}) clasificó solo los píxeles con máscara válida y valores finitos, positivos y distintos de NoData en las diez bandas, es decir, la \textbf{intersección física estricta de las diez bandas: exactamente 342.525 píxeles válidos (3.425,25~ha = 34,2525~$\text{km}^2$)}.
 
-Se comprobó la coincidencia exacta al 100~\% entre el conteo numérico de la matriz ráster \texttt{outputs/rasters/landcover\_ann.tif} (SHA-256: \texttt{540cb9e738...}) y los valores tabulados en la cartografía temática oficial (Tabla~\ref{tab:areas_ann}):
+Fuera de ese dominio, el GeoTIFF de salida conserva el valor 0 (NoData). Cada salida es un ráster \texttt{uint8} de una banda con códigos 1 a 5, el mismo CRS y la misma transformación afín del stack. La Tabla~\ref{tab:areas_ann} presenta las superficies obtenidas con ANN. \estadoauditoria
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{c l c r r r r}
+\resizebox{\textwidth}{!}{\begin{tabular}{c l c r r r r}
 \toprule
 \textbf{Class\_ID} & \textbf{Cobertura terrestre} & \textbf{Color QGIS} & \textbf{Píxeles} & \textbf{Área (ha)} & \textbf{Área ($\text{km}^2$)} & \textbf{Superficie (\%)} \\
 \midrule
@@ -328,8 +362,8 @@ Se comprobó la coincidencia exacta al 100~\% entre el conteo numérico de la ma
 \midrule
 — & \textbf{Total analizado (10 bandas)} & —                       & \textbf{342.525} & \textbf{3.425,25} & \textbf{34,2525} & \textbf{100,00\,\%} \\
 \bottomrule
-\end{tabular}
-\caption{Cuantificación espacial definitiva de coberturas obtenida con la Red Neuronal Artificial (ANN/MLP).}
+\end{tabular}}
+\caption{Superficie por cobertura obtenida con la Red Neuronal Artificial (ANN/MLP), según \texttt{outputs/metrics/inferencia\_10bandas/area\_stats\_ann.json}.}
 \label{tab:areas_ann}
 \end{table}
 
@@ -339,7 +373,7 @@ La Tabla~\ref{tab:sensibilidad_areas} compara la distribución superficial predi
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{l r r r r r}
+\resizebox{\textwidth}{!}{\begin{tabular}{l r r r r r}
 \toprule
 \textbf{Cobertura terrestre} & \textbf{ANN / MLP (ha)} & \textbf{SVM RBF (ha)} & \textbf{KNN (ha)} & \textbf{Árbol CART (ha)} & \textbf{Reg. Logística (ha)} \\
 \midrule
@@ -351,30 +385,46 @@ Agua                    & 5,46 (0,2\,\%)      & 5,21 (0,2\,\%)      & 6,32 (0,2\
 \midrule
 \textbf{Total escena}   & \textbf{3.425,25 ha} & \textbf{3.425,25 ha} & \textbf{3.425,25 ha} & \textbf{3.425,25 ha} & \textbf{3.425,25 ha} \\
 \bottomrule
-\end{tabularx}
+\end{tabular}}
 \caption{Sensibilidad y concordancia de áreas clasificadas entre las cinco arquitecturas sobre el dominio común.}
 \label{tab:sensibilidad_areas}
 \end{table}
 
-Se observa una \textbf{convergencia sobresaliente entre los clasificadores no lineales suaves (ANN, SVM y KNN)}, cuya discrepancia en Bosque y Suelo Desnudo es menor a 9,5~ha ($< 0,27~\%$ del paisaje). Por el contrario, la frontera lineal de la Regresión Logística subestima drásticamente el Suelo Desnudo (18,00~\%) e hipertrofia los Pastos (254,97~ha), reflejando a escala territorial el mismo desvío evidenciado en su matriz de confusión.
+ANN y SVM presentan resultados próximos en Bosque (diferencia de 9,50~ha) y en Suelo Desnudo y Roca (8,41~ha). KNN difiere de ANN en 33,85~ha de Bosque y 23,43~ha de Suelo Desnudo y Roca, por lo que no corresponde afirmar una convergencia uniforme. El Árbol de Decisión y la Regresión Logística se apartan mucho más: la Regresión Logística asigna 616,46~ha a Suelo Desnudo y Roca (18,0~\%) y 254,97~ha a Pastos y Cultivos (7,4~\%), en coherencia con la confusión Suelo$\rightarrow$Pastos observada en su matriz. La superficie cartografiada depende, por tanto, del clasificador elegido.
 
 \subsection{Cartografía temática en QGIS}
-El archivo GeoTIFF \texttt{landcover\_ann.tif} se importó en QGIS~3.44.13 (\texttt{outputs/rasters/Clasificacion\_Cobertura\_ANN.qgz}), aplicando la paleta categórica oficial \texttt{landcover\_style.qml}. La composición cartográfica final (Figura~\ref{fig:mapa_qgis}) incorpora cuadrícula de coordenadas métricas \texttt{EPSG:9377}, escala gráfica, norte geográfico, cuadro de áreas verificado y notas de trazabilidad técnica.
+El archivo GeoTIFF \texttt{landcover\_ann.tif} se importó en QGIS~3.44.13 (\nolinkurl{outputs/rasters/Clasificacion_Cobertura_ANN.qgz}), aplicando la paleta categórica oficial \texttt{landcover\_style.qml}. La composición cartográfica final (Figura~\ref{fig:mapa_qgis}) incluye leyenda de las cinco clases, escala gráfica, norte, cuadro de áreas y referencia \texttt{EPSG:9377}. Las zonas en blanco corresponden a píxeles sin clasificar (NoData en alguna de las diez bandas).
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/mapa_ann.png}
-    \caption{Mapa temático oficial de coberturas terrestres post-sismo en San José del Palmar (Chocó) obtenido con la Red Neuronal Artificial (ANN/MLP) en QGIS. Las superficies de la leyenda coinciden exactamente con la cuantificación de \texttt{landcover\_ann.tif}.}
+    \caption{Mapa temático oficial de coberturas terrestres post-sismo en San José del Palmar (Chocó) obtenido con la Red Neuronal Artificial (ANN/MLP) en QGIS. El cuadro de áreas reproduce los valores de \texttt{area\_stats\_ann.json}.}
     \label{fig:mapa_qgis}
 \end{figure}
+
+\section{Limitaciones}
+\label{sec:limitaciones}
+\begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
+    \item \textbf{Pocos polígonos de prueba en clases minoritarias:} Agua y Urbano y Vías tienen un único polígono de prueba, y Pastos y Cultivos dos. Sus métricas por clase son frágiles y las diferencias entre modelos en esas clases no son generalizables.
+    \item \textbf{Sin pruebas de significancia:} no se aplicaron pruebas estadísticas (por ejemplo, McNemar) entre modelos; las diferencias de desempeño se reportan como descriptivas.
+    \item \textbf{Una sola escena:} sin una imagen previa al sismo no es posible separar el suelo expuesto por el evento del preexistente.
+    \item \textbf{Cobertura de la inferencia:} se clasificó el 72,6~\% de las celdas de la máscara (342.525 de 471.579). Las 129.054 restantes tienen NoData en al menos una banda, concentrado en \texttt{B05}, \texttt{B06}, \texttt{B07} y \texttt{B8A}.
+    \item \textbf{Polígonos sin muestras:} 95 de los 240 polígonos digitalizados no aportaron píxeles; su causa individual (fuera de la escena, fuera de la máscara o NoData en alguna banda) está pendiente de verificación.
+    \item \textbf{Optimización acotada:} las grillas de hiperparámetros son pequeñas (50 combinaciones en total) y no se evaluaron ensambles como Random Forest o Boosting.
+    \item \textbf{Versión de serialización:} \texttt{models/logistic\_regression.joblib} fue serializado con scikit-learn~1.9.1; en el entorno de referencia (1.5.2) emite una advertencia de versión, aunque sus métricas de prueba se reproducen exactamente.
+\end{itemize}
+
+\section{Reproducibilidad y entregables}
+El código fuente, los modelos serializados, las particiones y las métricas se encuentran en el repositorio del proyecto~\cite{repo2026}. El entorno de referencia es Python~3.12.10 con numpy~1.26.4, scikit-learn~1.5.2 y rasterio~1.4.4 (\texttt{requirements.txt}). Las métricas de prueba de los cinco modelos se recalcularon desde los archivos \texttt{.joblib} y coinciden exactamente con las reportadas en la Tabla~\ref{tab:comparacion_modelos}; la suite de pruebas automáticas (\texttt{pytest}, 8 pruebas) se ejecuta sin errores. El flujo de inferencia y auditoría se documenta en \texttt{README.md} y \texttt{docs/DECISIONES\_INFERENCIA.md}. Los entregables son: (i) el GeoTIFF temático \texttt{landcover\_ann.tif}; (ii) este informe técnico, y (iii) el código fuente en ZIP.
 
 \section{Discusión y conclusiones}
 
 \begin{enumerate}[leftmargin=*,noitemsep,topsep=2pt]
-    \item \textbf{Cumplimiento integral del flujo GeoAI:} Se completó el ciclo técnico desde la descarga y reproyección canónica de Sentinel-2 L2A (\texttt{EPSG:9377}) hasta la construcción tabular sin fugas espaciales, la optimización con validación cruzada agrupada y la inferencia ráster georreferenciada con cuantificación métrica de superficies.
-    \item \textbf{Criterio de selección del modelo campeón:} La selección algorítmica no responde a una métrica simplista. Mientras \textbf{SVM RBF} ofrece el mayor Overall Accuracy (89,70~\%) y Kappa (0,8283) por su precisión en las clases de mayor masa espacial, la \textbf{Red Neuronal Artificial (ANN / MLP)} se consolida como el modelo con mejor capacidad de discriminación balanceada al registrar el mayor Macro-F1 (0,7075 en test y 0,7103 en desarrollo) y triplicar la precisión en la clase crítica Urbano y Vías (62,50~\% vs. 39,45~\% de SVM).
-    \item \textbf{Aporte físico de las bandas multiespectrales:} El análisis de impureza de Gini demostró cuantitativamente que un stack convencional RGB resulta insuficiente: las bandas infrarrojas (\texttt{B08}, \texttt{B11}) y de borde rojo (\texttt{B05}) son indispensables para desacoplar las cicatrices de remoción en masa y roca desnuda del dosel vegetal y de las estructuras construidas.
-    \item \textbf{Interpretación de las 1.172,13~ha de Suelo Desnudo:} Las 1.172,13~ha clasificadas como suelo expuesto representan el 34,22~\% del territorio analizado tras el sismo de magnitud 7,4. Corresponden a laderas denudadas, cicatrices activas, derrumbes cosísmicos y depósitos torrenciales que alteraron la dinámica sedimentaria del cañón del río Ingará y aislaron tramos de conectividad rural.
+    \item \textbf{Cumplimiento del flujo GeoAI:} Se completó el ciclo desde la preparación de Sentinel-2 L2A en \texttt{EPSG:9377} hasta el TSV de diez bandas y 14.155 muestras, la optimización con validación cruzada agrupada por polígono, la evaluación de cinco modelos sobre el mismo conjunto de prueba reservado y la inferencia ráster con cuantificación de superficies.
+    \item \textbf{Selección del modelo:} SVM RBF obtuvo el mayor Overall Accuracy (89,70~\%) y Kappa (0,8283); la ANN/MLP, el mayor Macro-F1 (0,7075 en test y 0,7103 en validación cruzada). Se eligió ANN para el mapa temático porque Macro-F1 fue la métrica priorizada desde la optimización para equilibrar las cinco clases. ANN no supera a SVM en todas las clases: empatan en Agua y Bosque, ANN mejora Urbano y Vías (precisión 62,50~\% frente a 39,45~\%, 23,05 puntos porcentuales) y SVM mejora ligeramente Pastos y Suelo Desnudo. SVM queda como alternativa documentada.
+    \item \textbf{Contribución espectral:} en el árbol de decisión, \texttt{B08} y \texttt{B04} concentraron el 66,48~\% de la importancia Gini, y \texttt{B02}, \texttt{B11} y \texttt{B05} también aportaron. Estas importancias describen el uso de las bandas en ese árbol, pero no demuestran que cada banda sea indispensable.
+    \item \textbf{Interpretación territorial:} la ANN clasificó 1.172,13~ha como Suelo Desnudo y Roca (34,22~\% de la superficie válida analizada). Es una predicción espectral sobre una escena posterior al sismo, no una observación de campo; atribuir esas hectáreas al evento requiere una comparación bitemporal y evidencia adicional.
+    \item \textbf{Trabajo futuro:} incorporar una escena previa al evento para análisis de cambio, aumentar los polígonos independientes de las clases minoritarias, evaluar ensambles (Random Forest, Boosting) y aplicar pruebas de significancia entre modelos.
 \end{enumerate}
 
 \begin{thebibliography}{9}
@@ -385,6 +435,10 @@ Servicio Geológico Colombiano (SGC). \textit{Boletín actualizado sobre el sism
 Calderón Romero, A. O. \textit{Final Project: A Comparative Analysis of Machine Learning Architectures for Satellite-Based Land Cover Classification}. Guía de curso, Pontificia Universidad Javeriana, 2026.
 \bibitem{lillesand2015}
 Lillesand, T., Kiefer, R. W., y Chipman, J. \textit{Remote Sensing and Image Interpretation}. 7ma ed., John Wiley \& Sons, 2015.
+\bibitem{roberts2017}
+Roberts, D. R., et al. Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. \textit{Ecography}, 40(8):913--929, 2017.
+\bibitem{congalton2019}
+Congalton, R. G., y Green, K. \textit{Assessing the Accuracy of Remotely Sensed Data: Principles and Practices}. 3ra ed., CRC Press, 2019.
 \bibitem{pedregosa2011}
 Pedregosa, F., et al. Scikit-learn: Machine Learning in Python. \textit{Journal of Machine Learning Research}, 12:2825--2830, 2011.
 \bibitem{repo2026}
