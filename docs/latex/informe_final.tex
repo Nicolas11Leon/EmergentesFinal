@@ -175,10 +175,10 @@ La autocorrelación espacial inherente a las imágenes de satélite invalida el 
 
 Para reducir este sesgo, la unidad de separación en \texttt{src/spatial\_split.py} es el \texttt{Polygon\_ID}:
 \begin{itemize}[noitemsep,topsep=2pt]
-    \item \textbf{Conjunto de desarrollo (Dev):} 116 polígonos con 11.447 píxeles (80,87~\% del dataset), organizados en 4 folds espaciales estratificados para ajuste y búsqueda de hiperparámetros.
+    \item \textbf{Conjunto de desarrollo (Dev):} 116 polígonos con 11.447 píxeles (80,87~\% del dataset), organizados en 4 folds espaciales agrupados por polígono (\texttt{GroupKFold}) para el ajuste y la búsqueda de hiperparámetros.
     \item \textbf{Conjunto de prueba independiente (Test):} 29 polígonos con 2.708 píxeles (19,13~\% del dataset). Ningún píxel de estos polígonos intervino directa ni indirectamente en el entrenamiento ni en la optimización.
 \end{itemize}
-Las particiones oficiales se registraron en \texttt{data/training/spatial\_partitions.json} con semilla fija 42. Se comprobó que ningún polígono aparece a la vez en desarrollo y prueba. La partición por polígono evita compartir píxeles de un mismo polígono entre conjuntos, aunque no elimina necesariamente la autocorrelación entre polígonos vecinos~\cite{roberts2017}. El conjunto de prueba contiene 3 polígonos de Bosque, 2 de Pastos y Cultivos, 22 de Suelo Desnudo y Roca, 1 de Urbano y Vías y 1 de Agua; por ello, las métricas de las clases minoritarias dependen de muy pocos polígonos independientes.
+El conjunto de prueba se separó con \texttt{StratifiedShuffleSplit} sobre la tabla de polígonos, estratificado por clase (20~\% de los polígonos); los folds de desarrollo no están estratificados. Las particiones oficiales se registraron en \texttt{data/training/spatial\_partitions.json} con semilla fija 42. Se comprobó que ningún polígono aparece a la vez en desarrollo y prueba. La partición por polígono evita compartir píxeles de un mismo polígono entre conjuntos, aunque no elimina necesariamente la autocorrelación entre polígonos vecinos~\cite{roberts2017}. El conjunto de prueba contiene 3 polígonos de Bosque, 2 de Pastos y Cultivos, 22 de Suelo Desnudo y Roca, 1 de Urbano y Vías y 1 de Agua; por ello, las métricas de las clases minoritarias dependen de muy pocos polígonos independientes.
 
 \begin{table}[H]
 \centering
